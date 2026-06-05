@@ -1,0 +1,2118 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  ChevronRight, 
+  ChevronDown,
+  ChevronLeft, 
+  BookOpen, 
+  Play, 
+  RotateCcw, 
+  Sparkles, 
+  CheckCircle, 
+  XCircle, 
+  ExternalLink,
+  BookMarked,
+  List,
+  Menu,
+  Copy,
+  Check,
+  Home,
+  Compass,
+  Terminal,
+  Cpu,
+  Bookmark,
+  Bell,
+  Sun,
+  Moon,
+  Search,
+  Share2,
+  Lightbulb,
+  Send,
+  Zap,
+  Clock,
+  Layers,
+  ArrowRight,
+  ArrowLeft
+} from 'lucide-react';
+
+const CHAPTERS_DATA = [
+  {
+    id: 'intro-exists',
+    title: 'Why JavaScript Exists',
+    heading: 'Why JavaScript Exists',
+    subtitle: 'The story of Netscape, Sun, and Microsoft and a language built in ten days.',
+    badges: [
+      { icon: Clock, text: '15 min read', color: 'text-purple-400' },
+      { icon: Sparkles, text: 'Story', color: 'text-[#C084FC]' },
+      { icon: Compass, text: 'Beginner', color: 'text-space-yellow' },
+      { icon: Layers, text: 'Fundamental', color: 'text-blue-400' }
+    ],
+    notes: {
+      blocks: [
+        {
+          type: 'text',
+          heading: '1. The Web Was Born Dead',
+          paragraphs: [
+            "In the early 1990s, a web page was a static document. It could show text and images, and that was essentially all.",
+            "There was no way for a page to react to you. If you filled in a form and made a mistake, the page could not tell you on the spot. It had to ship your data all the way to a distant server and wait for the server to send back a reply just to say \"that's wrong, try again.\""
+          ]
+        },
+        {
+          type: 'takeaway',
+          title: 'Key Takeaway',
+          text: 'Netscape realized the web needed to come alive. It needed to respond instantly, right there in the page.'
+        },
+        {
+          type: 'text',
+          heading: '2. Enter Sun, and a Language Called Java',
+          paragraphs: [
+            "A company called Sun Microsystems had created a programming language named Java.",
+            "Java's superpower was a promise:"
+          ]
+        },
+        {
+          type: 'quote',
+          text: '“Write once, run anywhere.”'
+        },
+        {
+          type: 'text',
+          paragraphs: [
+            "A Java program didn't care whether you were on Windows, Mac, or Linux — it would run the same everywhere, inside a piece of software called the Java Virtual Machine."
+          ]
+        }
+      ]
+    },
+    summary: 'JavaScript was created in May 1995 by Brendan Eich at Netscape. Designed under tight deadlines as a "glue language" to make HTML pages interactive, it merged concepts from Scheme, Self, and Java. It is now standardized under ECMAScript and runs on billions of devices.',
+    codeHtml: `<span class="code-comment">// The classic Netscape greeting</span>
+<span class="code-keyword">const</span> <span class="code-variable">greeting</span> <span class="code-operator">=</span> <span class="code-string">"Hello World"</span>;
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-variable">greeting</span>);
+
+<span class="code-comment">// Brendan's original 1995 scripting vision</span>
+<span class="code-keyword">function</span> <span class="code-function">makeDynamic</span>() {
+  <span class="code-keyword">return</span> <span class="code-string">"Page is now interactive!"</span>;
+}`,
+    sandboxCode: `// Try modifying this classic code
+const language = "JavaScript";
+const timeFrame = "10 days";
+
+console.log(\`\${language} was designed in just \${timeFrame}!\n\`);
+
+function estimateEffort(days) {
+  if (days <= 10) return "Rapid prototyping!";
+  return "Standard project timeline.";
+}
+
+console.log(estimateEffort(10));`,
+    quiz: {
+      question: 'Who created JavaScript, and how long did it take to build the initial prototype?',
+      options: [
+        'James Gosling in 10 months',
+        'Brendan Eich in 10 days',
+        'Marc Andreessen in 2 weeks',
+        'Tim Berners-Lee in 1 day'
+      ],
+      answerIdx: 1,
+      explanation: 'Brendan Eich created Mocha (which became JavaScript) in 10 days in May 1995 while working at Netscape Communications.'
+    },
+    references: [
+      { name: 'MDN Web Docs: A Brief History of JavaScript', url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/About_JavaScript' }
+    ]
+  },
+  {
+    id: 'browser-env',
+    title: 'The Browser Environment',
+    heading: 'The Browser Environment',
+    subtitle: 'How the browser hosts JavaScript and provides the DOM, Web APIs, and window context.',
+    badges: [
+      { icon: Clock, text: '10 min read', color: 'text-purple-400' },
+      { icon: Sparkles, text: 'Platform', color: 'text-[#C084FC]' },
+      { icon: Compass, text: 'Beginner', color: 'text-space-yellow' },
+      { icon: Layers, text: 'Fundamental', color: 'text-blue-400' }
+    ],
+    notes: {
+      blocks: [
+        {
+          type: 'text',
+          heading: '1. The Host Environment',
+          paragraphs: [
+            "JavaScript is a language spec, but it cannot run in a vacuum. It requires a host environment.",
+            "The browser is the most popular host environment for JS. It provides a compiler engine (like V8 in Chrome, SpiderMonkey in Firefox) to translate code, along with custom runtime components."
+          ]
+        },
+        {
+          type: 'takeaway',
+          title: 'Key Takeaway',
+          text: 'The host environment supplies native objects and functions (Web APIs) that allow JavaScript to communicate with the network, layout engine, and system resources.'
+        },
+        {
+          type: 'text',
+          heading: '2. The Global Window Object',
+          paragraphs: [
+            "The global object in the browser is window. Any global variables or functions defined in your code are attached as properties of window.",
+            "Through window, you access Web APIs that are separate from the core JS spec, such as the DOM (via window.document), Timers (via window.setTimeout), and Network fetches (via window.fetch)."
+          ]
+        },
+        {
+          type: 'quote',
+          text: '“window is the gateway to the browser runtime stack.”'
+        }
+      ]
+    },
+    summary: 'The browser environment provides the runtime hosting JavaScript, including engine compilers (V8) and external hooks called Web APIs (the DOM, fetch, and timer bindings). Everything runs relative to the global window object.',
+    codeHtml: `<span class="code-comment">// Logging properties of the window object</span>
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-variable">window</span>.<span class="code-variable">location</span>.<span class="code-variable">hostname</span>);
+
+<span class="code-comment">// Fetching layout properties from document API</span>
+<span class="code-keyword">const</span> <span class="code-variable">width</span> <span class="code-operator">=</span> <span class="code-variable">window</span>.<span class="code-variable">innerWidth</span>;
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-string">"Viewport width:"</span>, <span class="code-variable">width</span>);`,
+    sandboxCode: `// Telemetry within the browser sandbox
+console.log("Analyzing browser platform metrics:\n");
+console.log("Global window inner width:", window.innerWidth);
+console.log("Browser user agent:", navigator.userAgent);`,
+    quiz: {
+      question: 'Which of the following is NOT part of the core ECMAScript standard, but is a Web API provided by the browser host?',
+      options: [
+        'Array mapping functions (map, filter)',
+        'Object prototypes',
+        'The document object (DOM)',
+        'Variables declared with const and let'
+      ],
+      answerIdx: 2,
+      explanation: 'The DOM (document, elements) is a Web API provided by the browser environment. Primitives, declarations, and prototypes are part of core ECMAScript.'
+    },
+    references: [
+      { name: 'MDN Web Docs: Browser Environment Reference', url: 'https://developer.mozilla.org/en-US/docs/Web/API' }
+    ]
+  },
+  {
+    id: 'how-works',
+    title: 'How JS Works',
+    heading: 'How JS Works Under the Hood',
+    subtitle: 'An introduction to compiler threads, call stacks, memory heaps, and the event loop.',
+    badges: [
+      { icon: Clock, text: '18 min read', color: 'text-purple-400' },
+      { icon: Sparkles, text: 'Under the Hood', color: 'text-[#C084FC]' },
+      { icon: Compass, text: 'Intermediate', color: 'text-space-yellow' },
+      { icon: Layers, text: 'Engine Architecture', color: 'text-blue-400' }
+    ],
+    notes: {
+      blocks: [
+        {
+          type: 'text',
+          heading: '1. Engine Execution & Call Stack',
+          paragraphs: [
+            "The JavaScript engine (such as Google's V8) consists of two main components: the Memory Heap and the Call Stack.",
+            "The Memory Heap is where memory allocation happens (storing large object references), while the Call Stack is where execution contexts are created. JavaScript is single-threaded, meaning it has only one Call Stack and executes one instruction at a time."
+          ]
+        },
+        {
+          type: 'takeaway',
+          title: 'Key Takeaway',
+          text: 'Because JS is single-threaded, any function running on the Call Stack blocks other computations. To execute long tasks without freezing the page, the engine delegates asynchronous operations to browser Web APIs.'
+        },
+        {
+          type: 'text',
+          heading: '2. The Event Loop Cycle',
+          paragraphs: [
+            "When asynchronous code (like a timer or network call) completes, its callback is sent to the Task Queue (or Callback Queue).",
+            "The Event Loop is a continuous loop whose sole job is to monitor the Call Stack. If the Call Stack is empty, it pulls the first task from the queue and pushes it onto the stack for execution."
+          ]
+        },
+        {
+          type: 'quote',
+          text: '“Stack pushes represent synchronous execution, while queues represent queued events.”'
+        }
+      ]
+    },
+    summary: 'The JS engine executes code on a single thread using a LIFO Call Stack. It allocates memory for objects in the Memory Heap. Asynchronous callbacks are scheduled through browser Web APIs and pushed back onto the stack via the Event Loop.',
+    codeHtml: `<span class="code-comment">// Tracing call execution contexts</span>
+<span class="code-keyword">function</span> <span class="code-function">multiply</span>(<span class="code-variable">a</span>, <span class="code-variable">b</span>) { <span class="code-keyword">return</span> <span class="code-variable">a</span> <span class="code-operator">*</span> <span class="code-variable">b</span>; }
+<span class="code-keyword">function</span> <span class="code-function">square</span>(<span class="code-variable">n</span>) { <span class="code-keyword">return</span> <span class="code-function">multiply</span>(<span class="code-variable">n</span>, <span class="code-variable">n</span>); }
+
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-function">square</span>(<span class="code-number">4</span>));`,
+    sandboxCode: `// Simulating execution stack trace
+function traceTaskOne() {
+  console.log(" -> [1] Task One executing...");
+  return "Finished One";
+}
+
+function runEngine() {
+  console.log("[0] Main script thread started...");
+  const res = traceTaskOne();
+  console.log("[2] Main script thread ended. Result:", res);
+}
+
+runEngine();`,
+    quiz: {
+      question: 'What runtime engine component is responsible for transferring callbacks from the task queue to the call stack when the stack is empty?',
+      options: [
+        'Memory Heap manager',
+        'The Event Loop',
+        'Syntax Parser compiler',
+        'Garbage Collector thread'
+      ],
+      answerIdx: 1,
+      explanation: 'The Event Loop checks the Call Stack. When it is empty, it feeds callback operations from the Task Queue/Microtask Queue into the stack.'
+    },
+    references: [
+      { name: 'MDN Web Docs: Concurrency Model and the Event Loop', url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop' }
+    ]
+  },
+  {
+    id: 'standards',
+    title: 'ECMAScript & Standards',
+    heading: 'ECMAScript & TC39 Standards',
+    subtitle: 'Standardizing JavaScript: from Netscape\'s submit to TC39, ES6, and modern specifications.',
+    badges: [
+      { icon: Clock, text: '12 min read', color: 'text-purple-400' },
+      { icon: Sparkles, text: 'Specification', color: 'text-[#C084FC]' },
+      { icon: Compass, text: 'Beginner', color: 'text-space-yellow' },
+      { icon: Layers, text: 'Language Governance', color: 'text-blue-400' }
+    ],
+    notes: {
+      blocks: [
+        {
+          type: 'text',
+          heading: '1. ECMAScript vs JavaScript',
+          paragraphs: [
+            "ECMAScript is the official specification managed by Ecma International. JavaScript is the programming language that implements this specification.",
+            "You can think of ECMAScript as a set of blueprints, and JavaScript as the actual houses built using those blueprints by browser engines."
+          ]
+        },
+        {
+          type: 'takeaway',
+          title: 'Key Takeaway',
+          text: 'By standardizing JavaScript under ECMAScript, TC39 ensures that code written in 1995 remains backward-compatible, and new ESNext proposals are implemented uniformly across all modern browser engines.'
+        },
+        {
+          type: 'text',
+          heading: '2. The TC39 Proposal Process',
+          paragraphs: [
+            "The Technical Committee 39 (TC39) is the group of browser vendors, programmers, and academics that decides which features make it into the ECMAScript standard.",
+            "New features undergo a strict 5-stage process: Stage 0 (Strawman), Stage 1 (Proposal), Stage 2 (Draft), Stage 3 (Candidate), and Stage 4 (Finished). Features in Stage 4 are scheduled for the next annual spec release."
+          ]
+        },
+        {
+          type: 'quote',
+          text: '“TC39 ensures language changes are consensus-driven and backward-compatible.”'
+        }
+      ]
+    },
+    summary: 'ECMAScript (ECMA-262) governs the core syntax and behavior of JavaScript. The TC39 committee updates the standard annually using a consensus-driven 5-stage proposal framework, guaranteeing backward-compatibility across all browsers.',
+    codeHtml: `<span class="code-comment">// Modern ES6+ syntax standards</span>
+<span class="code-keyword">const</span> <span class="code-variable">spaceship</span> <span class="code-operator">=</span> { <span class="code-variable">name</span>: <span class="code-string">"Apollo"</span>, <span class="code-variable">speed</span>: <span class="code-number">10</span> };
+
+<span class="code-comment">// Object destructuring proposal (Finished stage)</span>
+<span class="code-keyword">const</span> { <span class="code-variable">name</span> } <span class="code-operator">=</span> <span class="code-variable">spaceship</span>;
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-variable">name</span>);`,
+    sandboxCode: `// Telemetry for ES6+ spread syntax
+const coreInfo = { standard: "ECMAScript", year: 2026 };
+const fullSpecs = { ...coreInfo, status: "Stage 4 Finished" };
+
+console.log("ESNext Spread Operator validation result:");
+console.log(fullSpecs);`,
+    quiz: {
+      question: 'At which stage of the TC39 proposal process is a new language feature considered "finished" and scheduled for standard release?',
+      options: [
+        'Stage 1 (Proposal)',
+        'Stage 2 (Draft)',
+        'Stage 3 (Candidate)',
+        'Stage 4 (Finished)'
+      ],
+      answerIdx: 3,
+      explanation: 'Once a proposal reaches Stage 4 (Finished), it has met all test requirements and browser implementation checks, and is included in the next yearly standard.'
+    },
+    references: [
+      { name: 'ECMA-262 Language Specification', url: 'https://tc39.es/ecma262/' }
+    ]
+  },
+  {
+    id: 'data-primitives',
+    title: 'Primitives vs Objects',
+    heading: 'Memory Management: Primitives vs Objects',
+    subtitle: 'Understanding Stack and Heap memory allocations and why it governs value copy versus reference assignment.',
+    badges: [
+      { icon: Clock, text: '12 min read', color: 'text-purple-400' },
+      { icon: Sparkles, text: 'Memory Architecture', color: 'text-[#C084FC]' },
+      { icon: Compass, text: 'Beginner', color: 'text-space-yellow' },
+      { icon: Layers, text: 'First Principles', color: 'text-blue-400' }
+    ],
+    notes: {
+      blocks: [
+        {
+          type: 'text',
+          heading: '1. Stack Memory and Primitives',
+          paragraphs: [
+            "JavaScript has 7 primitive types: Number, String, Boolean, null, undefined, Symbol, and BigInt.",
+            "Primitives are stored directly on the Stack. The stack is a fast, structured memory space of fixed size. When you declare a primitive, JavaScript allocates a small chunk of stack memory to hold its literal value.",
+            "Primitive values are immutable. You cannot mutate the value 'hello' to become 'Hello' in place; any operation that modifies a primitive returns a brand-new value in a separate memory slot."
+          ]
+        },
+        {
+          type: 'takeaway',
+          title: 'Key Takeaway',
+          text: 'Because primitives are stored directly in stack slots, assigning one variable to another copies the actual value. They are completely independent.'
+        },
+        {
+          type: 'text',
+          heading: '2. Heap Memory and Objects',
+          paragraphs: [
+            "Objects (including Arrays and Functions) are of dynamic size. They cannot be stored in fixed stack slots. Instead, they are allocated inside the Memory Heap, a large, unstructured pool of memory.",
+            "When you create an object, the engine allocates heap space for its properties. It then stores a pointer (the memory address of the heap location) in a stack slot associated with your variable.",
+            "When you assign one object variable to another, you copy the pointer, not the object itself. Both variables now point to the exact same heap reference."
+          ]
+        },
+        {
+          type: 'quote',
+          text: '“Variables hold values for primitives, but they hold addresses for objects.”'
+        }
+      ]
+    },
+    summary: 'Primitives (Number, String, Boolean, null, undefined, Symbol, BigInt) are immutable values stored directly on the Stack and copied by value. Objects (including Arrays and Functions) are mutable structures stored in the Heap and copied by reference (pointer address).',
+    codeHtml: `<span class="code-comment">// Primitives copy by value</span>
+<span class="code-keyword">let</span> <span class="code-variable">x</span> <span class="code-operator">=</span> <span class="code-number">10</span>;
+<span class="code-keyword">let</span> <span class="code-variable">y</span> <span class="code-operator">=</span> <span class="code-variable">x</span>;
+<span class="code-variable">y</span> <span class="code-operator">=</span> <span class="code-number">20</span>; <span class="code-comment">// x remains 10</span>
+<br/>
+<span class="code-comment">// Objects copy by reference</span>
+<span class="code-keyword">const</span> <span class="code-variable">obj1</span> <span class="code-operator">=</span> { <span class="code-variable">value</span>: <span class="code-number">10</span> };
+<span class="code-keyword">const</span> <span class="code-variable">obj2</span> <span class="code-operator">=</span> <span class="code-variable">obj1</span>;
+<span class="code-variable">obj2</span>.<span class="code-variable">value</span> <span class="code-operator">=</span> <span class="code-number">20</span>; <span class="code-comment">// obj1.value is now 20</span>`,
+    sandboxCode: `// Modify these variables to see stack vs heap in action
+let a = "initial";
+let b = a;
+b = "changed";
+
+console.log("Primitive Copy Check:");
+console.log("a:", a); // "initial"
+console.log("b:", b); // "changed"
+
+console.log("\nObject Reference Check:");
+const spacecraft = { name: "Voyager 1" };
+const clone = spacecraft;
+clone.name = "Voyager 2";
+
+console.log("spacecraft.name:", spacecraft.name); // "Voyager 2"
+console.log("clone.name:", clone.name); // "Voyager 2"`,
+    quiz: {
+      question: 'What happens in memory when you assign `let obj2 = obj1` where `obj1` is an object?',
+      options: [
+        'A full clone of the object is created in the heap.',
+        'The variable obj2 is assigned a copy of the pointer address pointing to the same heap location.',
+        'The object is moved from the stack to the heap.',
+        'An error is thrown because objects are immutable.'
+      ],
+      answerIdx: 1,
+      explanation: 'Assigning one object variable to another copies the memory address pointer. Both variables reference the exact same object in the heap.'
+    },
+    references: [
+      { name: 'MDN: JavaScript data types and data structures', url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures' }
+    ]
+  },
+  {
+    id: 'data-coercion',
+    title: 'Type Coercion & Truthiness',
+    heading: 'Type Coercion & Truthiness Heuristics',
+    subtitle: 'Demystifying implicit type conversions and how JavaScript evaluates conditions.',
+    badges: [
+      { icon: Clock, text: '12 min read', color: 'text-purple-400' },
+      { icon: Sparkles, text: 'Coercion', color: 'text-[#C084FC]' },
+      { icon: Compass, text: 'Intermediate', color: 'text-space-yellow' },
+      { icon: Layers, text: 'Language Quirks', color: 'text-blue-400' }
+    ],
+    notes: {
+      blocks: [
+        {
+          type: 'text',
+          heading: '1. Implicit vs Explicit Coercion',
+          paragraphs: [
+            "JavaScript is a dynamically and weakly typed language. When performing operations with mismatched types, the engine performs implicit coercion rather than throwing a type error.",
+            "Explicit coercion is when you deliberately convert types (e.g. `Number('42')`). Implicit coercion happens behind the scenes (e.g. `'42' - 2` becomes `40` because the mathematical minus operator casts `'42'` to a number)."
+          ]
+        },
+        {
+          type: 'takeaway',
+          title: 'Key Takeaway',
+          text: 'The subtraction (-) and multiplication (*) operators only exist for mathematical operations, forcing number coercion. However, the addition (+) operator is overloaded for string concatenation, forcing string coercion if either side is a string.'
+        },
+        {
+          type: 'text',
+          heading: '2. Truthy vs Falsy Evaluation',
+          paragraphs: [
+            "Every value in JavaScript has an inherent boolean state. When evaluated in a conditional (like an `if` statement), values are coerced to true or false.",
+            "There are exactly 8 falsy values in JS: false, 0, -0, 0n (BigInt zero), \"\" (empty string), null, undefined, and NaN. Everything else is truthy (including empty arrays `[]` and empty objects `{}`)."
+          ]
+        },
+        {
+          type: 'quote',
+          text: '“Coercion is the price we pay for dynamic expression evaluation.”'
+        }
+      ]
+    },
+    summary: 'Type coercion is the implicit or explicit conversion of values from one data type to another. Boolean evaluation classifies values as falsy (exactly eight states including null and 0) or truthy (everything else, including empty arrays).',
+    codeHtml: `<span class="code-comment">// Concatenation vs Arithmetic</span>
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-string">"1"</span> <span class="code-operator">+</span> <span class="code-number">1</span>); <span class="code-comment">// "11" (String)</span>
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-string">"10"</span> <span class="code-operator">-</span> <span class="code-number">2</span>); <span class="code-comment">// 8 (Number)</span>
+<br/>
+<span class="code-comment">// Truthiness check</span>
+<span class="code-keyword">if</span> ([]) {
+  <span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-string">"Empty arrays are truthy!"</span>);
+}`,
+    sandboxCode: `// Experiment with implicit coercion results
+console.log("Coercion Heuristics:");
+console.log("'5' + 5 =", "5" + 5);
+console.log("'5' - 5 =", "5" - 5);
+console.log("false == 0 =", false == 0);
+
+console.log("\nTruthy checks:");
+console.log("Boolean([]):", Boolean([])); // true
+console.log("Boolean(null):", Boolean(null)); // false`,
+    quiz: {
+      question: 'Which of the following values is evaluated as TRUTHY in a conditional expression?',
+      options: [
+        '"" (empty string)',
+        '[] (empty array)',
+        '0 (number zero)',
+        'undefined'
+      ],
+      answerIdx: 1,
+      explanation: 'Empty arrays `[]` and empty objects `{}` are objects, and all objects are truthy in JavaScript, regardless of their contents.'
+    },
+    references: [
+      { name: 'MDN Web Docs: Type Coercion', url: 'https://developer.mozilla.org/en-US/docs/Glossary/Type_coercion' }
+    ]
+  },
+  {
+    id: 'ops-arithmetic',
+    title: 'Arithmetic & Type Casting',
+    heading: 'Arithmetic Operators and Casting',
+    subtitle: 'First principles of operation precedence, overloading, and string conversions.',
+    badges: [
+      { icon: Clock, text: '10 min read', color: 'text-purple-400' },
+      { icon: Sparkles, text: 'Arithmetic', color: 'text-[#C084FC]' },
+      { icon: Compass, text: 'Beginner', color: 'text-space-yellow' },
+      { icon: Layers, text: 'Evaluation', color: 'text-blue-400' }
+    ],
+    notes: {
+      blocks: [
+        {
+          type: 'text',
+          heading: '1. The Concatenation Override',
+          paragraphs: [
+            "In JavaScript, operators are processed using the specifications defined in ECMA-262. The addition operator (+) is unique because it handles both numerical addition and string concatenation.",
+            "If either operand is a string, JavaScript converts the other operand to a string and concatenates them. If neither is a string, both are coerced to numbers (via the `ToNumber` abstract operation) and added mathematically."
+          ]
+        },
+        {
+          type: 'takeaway',
+          title: 'Key Takeaway',
+          text: 'Non-addition arithmetic operators (-, *, /, %) have no string-based behavior. If you pass a string to them, they will always attempt to coerce it to a number. If it fails, they return NaN (Not a Number).'
+        },
+        {
+          type: 'text',
+          heading: '2. Operator Precedence and Evaluation Order',
+          paragraphs: [
+            "Operator precedence determines the order in which operators are evaluated. Multiplicative operators (*, /, %) have higher precedence than additive operators (+, -).",
+            "Operators of the same precedence are evaluated from left to right (left-associative). Parentheses can be used to explicitly override precedence."
+          ]
+        }
+      ]
+    },
+    summary: 'The plus (+) operator is overloaded for string concatenation and numerical addition. Other arithmetic operators always cast values to numbers or evaluate to NaN. Precedence controls evaluation sequences.',
+    codeHtml: `<span class="code-comment">// Precedence and coercion</span>
+<span class="code-keyword">const</span> <span class="code-variable">result</span> <span class="code-operator">=</span> <span class="code-number">10</span> <span class="code-operator">+</span> <span class="code-number">5</span> <span class="code-operator">*</span> <span class="code-string">"2"</span>; <span class="code-comment">// 5 * "2" is 10, plus 10 is 20</span>
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-variable">result</span>);
+<br/>
+<span class="code-comment">// division coercion</span>
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-string">"20"</span> <span class="code-operator">/</span> <span class="code-number">2</span>); <span class="code-comment">// 10</span>`,
+    sandboxCode: `// Telemetry tests for mathematics
+console.log("Evaluation details:");
+console.log("10 - '2' * 3 =", 10 - '2' * 3); // 4
+console.log("'10' - '2' =", '10' - '2'); // 8
+console.log("10 + 5 + 'px' =", 10 + 5 + 'px'); // '15px'`,
+    quiz: {
+      question: 'What is the output of the expression `10 + 5 + "5"` in JavaScript?',
+      options: [
+        '"20"',
+        '"1055"',
+        '"155"',
+        '155'
+      ],
+      answerIdx: 2,
+      explanation: 'Evaluated left-to-right: `10 + 5` is mathematical addition producing `15`. Then `15 + "5"` triggers string concatenation, producing the string `"155"`.'
+    },
+    references: [
+      { name: 'MDN Web Docs: Operator Precedence', url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_precedence' }
+    ]
+  },
+  {
+    id: 'ops-comparison',
+    title: 'Equality == vs ===',
+    heading: 'Abstract vs Strict Equality Comparison',
+    subtitle: 'Mastering JavaScript comparison algorithms and the mechanics of type coercion in equality.',
+    badges: [
+      { icon: Clock, text: '12 min read', color: 'text-purple-400' },
+      { icon: Sparkles, text: 'Comparison', color: 'text-[#C084FC]' },
+      { icon: Compass, text: 'Beginner', color: 'text-space-yellow' },
+      { icon: Layers, text: 'Logic Rules', color: 'text-blue-400' }
+    ],
+    notes: {
+      blocks: [
+        {
+          type: 'text',
+          heading: '1. Abstract Equality (==)',
+          paragraphs: [
+            "The abstract equality operator (==) compares two values after attempting to coerce them to a common type if they differ. This follows the complex Abstract Equality Comparison Algorithm in ECMAScript.",
+            "For example, when comparing `5 == '5'`, the string `'5'` is coerced to the number `5`. When comparing booleans, the boolean is coerced to a number (`true` to `1`, `false` to `0`).",
+            "This leads to famous quirks: `[] == ![]` resolves to `true` because of sequential coercion steps."
+          ]
+        },
+        {
+          type: 'takeaway',
+          title: 'Key Takeaway',
+          text: 'Abstract equality (==) can lead to unpredictable bugs due to implicit coercion rules. Always use strict equality (===) to compare both value and type, unless explicitly checking for null and undefined simultaneously.'
+        },
+        {
+          type: 'text',
+          heading: '2. Strict Equality (===)',
+          paragraphs: [
+            "The strict equality operator (===) performs no type coercion. If the values have different types, they are immediately considered unequal.",
+            "Strict equality is faster and highly predictable. The only notable exception is `NaN === NaN`, which evaluates to `false` in JavaScript because NaN is defined as unequal to everything, including itself (use `Number.isNaN()` to check for NaN)."
+          ]
+        },
+        {
+          type: 'quote',
+          text: '“=== compares identities; == compares representations.”'
+        }
+      ]
+    },
+    summary: 'Strict equality (===) compares both type and value without coercion. Abstract equality (==) coerces values to a common type using the abstract comparison algorithm before matching. Prefer strict equality for safety.',
+    codeHtml: `<span class="code-comment">// Abstract Coercion</span>
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-number">5</span> <span class="code-operator">==</span> <span class="code-string">"5"</span>); <span class="code-comment">// true</span>
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-number">5</span> <span class="code-operator">===</span> <span class="code-string">"5"</span>); <span class="code-comment">// false</span>
+<br/>
+<span class="code-comment">// The Nullish check exception</span>
+<span class="code-keyword">const</span> <span class="code-variable">val</span> <span class="code-operator">=</span> <span class="code-keyword">null</span>;
+<span class="code-keyword">if</span> (<span class="code-variable">val</span> <span class="code-operator">==</span> <span class="code-keyword">undefined</span>) {
+  <span class="code-comment">// true! Matches both null and undefined</span>
+}`,
+    sandboxCode: `// Run comparisons to test edge cases
+console.log("Standard Comparisons:");
+console.log("0 == false:", 0 == false); // true
+console.log("0 === false:", 0 === false); // false
+console.log("null == undefined:", null == undefined); // true
+console.log("null === undefined:", null === undefined); // false
+
+console.log("\nNaN Edge Case:");
+console.log("NaN === NaN:", NaN === NaN); // false`,
+    quiz: {
+      question: 'Which comparison evaluates to `false`?',
+      options: [
+        'null == undefined',
+        '"" == 0',
+        '[] == false',
+        'null === undefined'
+      ],
+      answerIdx: 3,
+      explanation: 'Strict equality (===) returns false when types differ. `null` is of type object (historically), and `undefined` is of type undefined.'
+    },
+    references: [
+      { name: 'MDN Web Docs: Equality Comparisons', url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness' }
+    ]
+  },
+  {
+    id: 'loops-control',
+    title: 'For, While & Flow',
+    heading: 'Loop Iterations and Execution Flow',
+    subtitle: 'Understanding loops from first principles of conditional jumps and code execution branching.',
+    badges: [
+      { icon: Clock, text: '10 min read', color: 'text-purple-400' },
+      { icon: Sparkles, text: 'Loops', color: 'text-[#C084FC]' },
+      { icon: Compass, text: 'Beginner', color: 'text-space-yellow' },
+      { icon: Layers, text: 'Control Flow', color: 'text-blue-400' }
+    ],
+    notes: {
+      blocks: [
+        {
+          type: 'text',
+          heading: '1. Machine Level Repetition',
+          paragraphs: [
+            "A loop is fundamentally a series of execution instructions that ends with a conditional jump back to the start.",
+            "JavaScript engines optimize loops using compilation heuristics. Loops continue executing as long as their condition resolves to a truthy value.",
+            "The `for` loop provides a structured block grouping the iterator declaration, loop test condition, and final update expression together."
+          ]
+        },
+        {
+          type: 'takeaway',
+          title: 'Key Takeaway',
+          text: 'The while loop is ideal when the number of iterations is unknown beforehand. The for loop is suited for iterating a specific number of times. Be careful to ensure the loop condition eventually turns falsy to prevent infinite loops that hang the single execution thread.'
+        },
+        {
+          type: 'text',
+          heading: '2. Loop Interrupts: break and continue',
+          paragraphs: [
+            "The `break` statement exits the loop immediately, transferring execution control to the first instruction following the loop block.",
+            "The `continue` statement skips the remaining statements in the current iteration and jumps directly to the loop condition test (or iterator update in a `for` loop)."
+          ]
+        }
+      ]
+    },
+    summary: 'Loops repeat code blocks based on a conditional expression. The break statement halts the loop immediately; continue skips the remaining lines of the active iteration. Infinite loops freeze the main thread.',
+    codeHtml: `<span class="code-comment">// standard for loop with interrupt</span>
+<span class="code-keyword">for</span> (<span class="code-keyword">let</span> <span class="code-variable">i</span> <span class="code-operator">=</span> <span class="code-number">0</span>; <span class="code-variable">i</span> <span class="code-operator">&lt;</span> <span class="code-number">5</span>; <span class="code-variable">i</span><span class="code-operator">++</span>) {
+  <span class="code-keyword">if</span> (<span class="code-variable">i</span> <span class="code-operator">===</span> <span class="code-number">2</span>) <span class="code-keyword">continue</span>; <span class="code-comment">// skip 2</span>
+  <span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-variable">i</span>);
+}`,
+    sandboxCode: `// Loop telemetry logs
+console.log("Loop execution results:");
+let count = 0;
+while (count < 3) {
+  console.log("Count is:", count);
+  count++;
+}
+
+console.log("\nInterrupted Loop:");
+for (let i = 0; i < 5; i++) {
+  if (i === 3) {
+    console.log("Terminating at index 3");
+    break;
+  }
+  console.log("Index:", i);
+}`,
+    quiz: {
+      question: 'What is the effect of calling `continue` inside a loop?',
+      options: [
+        'It completely terminates the loop execution.',
+        'It skips the rest of the current iteration and goes to the next iteration step.',
+        'It resets the loop index variable to zero.',
+        'It causes the loop to pause execution until a web event occurs.'
+      ],
+      answerIdx: 1,
+      explanation: 'The continue statement skips the rest of the loop body for the current iteration and moves control straight to the loop condition test/update.'
+    },
+    references: [
+      { name: 'MDN Web Docs: Loops and iteration', url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration' }
+    ]
+  },
+  {
+    id: 'loops-iteration',
+    title: 'For...in vs For...of',
+    heading: 'Iterating over Properties vs Values',
+    subtitle: 'Understanding the enumerable property lookup rules and the Iterator protocol under the hood.',
+    badges: [
+      { icon: Clock, text: '12 min read', color: 'text-purple-400' },
+      { icon: Sparkles, text: 'Iteration', color: 'text-[#C084FC]' },
+      { icon: Compass, text: 'Intermediate', color: 'text-space-yellow' },
+      { icon: Layers, text: 'Language Mechanics', color: 'text-blue-400' }
+    ],
+    notes: {
+      blocks: [
+        {
+          type: 'text',
+          heading: '1. Object Enumerable keys: for...in',
+          paragraphs: [
+            "The `for...in` statement iterates over all enumerable string properties of an object, including properties inherited up the prototype chain.",
+            "Because it inspects inherited properties, using `for...in` on arrays is highly discouraged; it will return array indexes as strings (e.g. `'0'`, `'1'`) and might include unexpected custom properties attached to the array prototype."
+          ]
+        },
+        {
+          type: 'takeaway',
+          title: 'Key Takeaway',
+          text: 'Use for...in to iterate over object keys. Use Object.hasOwnProperty(key) inside the loop to filter out inherited prototype properties if you only want the object\'s own keys.'
+        },
+        {
+          type: 'text',
+          heading: '2. The Iterable Protocol: for...of',
+          paragraphs: [
+            "The `for...of` statement (introduced in ES6) iterates over values produced by an iterable object.",
+            "An object is iterable if it defines a method with the key `Symbol.iterator`. Built-in iterables include Array, String, Map, Set, and NodeLists.",
+            "Objects are NOT iterable by default because they do not have a default iterator. Thus, calling `for...of` on a plain object throws a TypeError."
+          ]
+        },
+        {
+          type: 'quote',
+          text: '“for...in loops over keys; for...of loops over values.”'
+        }
+      ]
+    },
+    summary: 'for...in iterates over the enumerable keys of an object, including inherited prototype chain properties. for...of uses the ES6 iterable protocol (Symbol.iterator) to iterate over values of arrays, strings, maps, and sets.',
+    codeHtml: `<span class="code-comment">// Objects key enumeration</span>
+<span class="code-keyword">const</span> <span class="code-variable">obj</span> <span class="code-operator">=</span> { <span class="code-variable">a</span>: <span class="code-number">1</span>, <span class="code-variable">b</span>: <span class="code-number">2</span> };
+<span class="code-keyword">for</span> (<span class="code-keyword">const</span> <span class="code-variable">key</span> <span class="code-keyword">in</span> <span class="code-variable">obj</span>) {
+  <span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-variable">key</span>, <span class="code-variable">obj</span>[<span class="code-variable">key</span>]); <span class="code-comment">// "a 1", "b 2"</span>
+}
+<br/>
+<span class="code-comment">// Arrays values iteration</span>
+<span class="code-keyword">const</span> <span class="code-variable">arr</span> <span class="code-operator">=</span> [<span class="code-number">10</span>, <span class="code-number">20</span>];
+<span class="code-keyword">for</span> (<span class="code-keyword">const</span> <span class="code-variable">value</span> <span class="code-keyword">of</span> <span class="code-variable">arr</span>) {
+  <span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-variable">value</span>); <span class="code-comment">// 10, 20</span>
+}`,
+    sandboxCode: `// Run loop tests
+const collection = [100, 200];
+collection.customProp = "hello"; // attach custom property
+
+console.log("for...in result (keys):");
+for (const key in collection) {
+  console.log("key:", key); // prints "0", "1", "customProp"
+}
+
+console.log("\nfor...of result (values):");
+for (const val of collection) {
+  console.log("val:", val); // prints 100, 200 (ignores properties)
+}`,
+    quiz: {
+      question: 'What happens if you attempt to use a `for...of` loop on a plain object `{ x: 1, y: 2 }`?',
+      options: [
+        'It loops over the object values: 1 and 2.',
+        'It loops over the object keys: "x" and "y".',
+        'It throws a TypeError stating the object is not iterable.',
+        'It runs successfully but executes zero iterations.'
+      ],
+      answerIdx: 2,
+      explanation: 'Plain objects do not implement the iterable protocol (Symbol.iterator), so using for...of on them results in a TypeError.'
+    },
+    references: [
+      { name: 'MDN Web Docs: for...of statement', url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of' }
+    ]
+  },
+  {
+    id: 'func-execution',
+    title: 'Execution Context & Scope',
+    heading: 'Execution Context & The Scope Chain',
+    subtitle: 'Behind the scenes of execution context creation, hoisting, variable scopes, and call stacks.',
+    badges: [
+      { icon: Clock, text: '15 min read', color: 'text-purple-400' },
+      { icon: Sparkles, text: 'Execution', color: 'text-[#C084FC]' },
+      { icon: Compass, text: 'Advanced', color: 'text-space-yellow' },
+      { icon: Layers, text: 'Compiler Engine', color: 'text-blue-400' }
+    ],
+    notes: {
+      blocks: [
+        {
+          type: 'text',
+          heading: '1. Two Phases of Execution Context',
+          paragraphs: [
+            "Before executing any code, the JavaScript engine compiles it. When a function runs, the engine creates a new Execution Context in two phases:",
+            "1. Creation Phase: The engine scans the code, sets up memory space for variables and function declarations (known as hoisting), sets up the Scope Chain, and binds the `this` keyword.",
+            "2. Execution Phase: The engine executes the code line-by-line, assigning values to variables and running functions."
+          ]
+        },
+        {
+          type: 'takeaway',
+          title: 'Key Takeaway',
+          text: 'Hoisting is not moving code to the top of the file physically. It is the engine allocating memory space for declarations during the Creation Phase. Function declarations are fully hoisted in memory. Variables declared with var are hoisted as undefined. Variables declared with let and const are hoisted but remain in the Temporal Dead Zone (TDZ) until their declaration line is executed.'
+        },
+        {
+          type: 'text',
+          heading: '2. Lexical Environment and Scope Chain',
+          paragraphs: [
+            "Scope determines variable accessibility. In JavaScript, scope is lexical (static), meaning it is set at the time of writing based on the physical position of functions in the source code.",
+            "If a variable is not found in the local Lexical Environment, the engine checks the outer (parent) Lexical Environment. This link up to the global scope constitutes the Scope Chain."
+          ]
+        },
+        {
+          type: 'quote',
+          text: '“Execution context represents execution state; lexical environment represents scope location.”'
+        }
+      ]
+    },
+    summary: 'When a function is called, the engine creates an Execution Context. Hoisting registers declarations in memory during compilation. Lexical scope sets variable boundaries statically, forming a linkable Scope Chain.',
+    codeHtml: `<span class="code-comment">// Hoisting demonstration</span>
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-variable">x</span>); <span class="code-comment">// undefined (hoisted var)</span>
+<span class="code-keyword">var</span> <span class="code-variable">x</span> <span class="code-operator">=</span> <span class="code-number">5</span>;
+<br/>
+<span class="code-comment">// Lexical scope hierarchy</span>
+<span class="code-keyword">const</span> <span class="code-variable">outer</span> <span class="code-operator">=</span> <span class="code-string">"global"</span>;
+<span class="code-keyword">function</span> <span class="code-function">checkScope</span>() {
+  <span class="code-keyword">const</span> <span class="code-variable">inner</span> <span class="code-operator">=</span> <span class="code-string">"local"</span>;
+  <span class="code-comment">// outer is accessible here via the scope chain</span>
+  <span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-variable">outer</span>); 
+}`,
+    sandboxCode: `// Telemetry tests for execution environments
+console.log("Hoisted variable x:", x); // undefined
+var x = "Fully Registered";
+
+try {
+  console.log("TDZ variable y:", y); // throws ReferenceError
+} catch (err) {
+  console.log("y error caught successfully:", err.message);
+}
+let y = "Assigned";`,
+    quiz: {
+      question: 'What is the state of a variable declared with `let` during the Creation Phase of the Execution Context?',
+      options: [
+        'It is initialized to undefined in memory.',
+        'It is ignored by the compiler entirely.',
+        'It is registered in memory but left uninitialized, putting it in the Temporal Dead Zone (TDZ).',
+        'It is immediately assigned its final literal value.'
+      ],
+      answerIdx: 2,
+      explanation: 'Variables declared with let and const are registered by the compiler during the creation phase but not initialized. They remain in the TDZ until the code execution reaches their declaration.'
+    },
+    references: [
+      { name: 'MDN Web Docs: Lexical Scope', url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures#lexical_scoping' }
+    ]
+  },
+  {
+    id: 'func-closures',
+    title: 'Closures & Lexical Scope',
+    heading: 'Lexical Closures and Heap Scopes',
+    subtitle: 'Deep-dive into how functions remember their outer variable scope even when executed elsewhere.',
+    badges: [
+      { icon: Clock, text: '15 min read', color: 'text-purple-400' },
+      { icon: Sparkles, text: 'Closures', color: 'text-[#C084FC]' },
+      { icon: Compass, text: 'Advanced', color: 'text-space-yellow' },
+      { icon: Layers, text: 'Core Architecture', color: 'text-blue-400' }
+    ],
+    notes: {
+      blocks: [
+        {
+          type: 'text',
+          heading: '1. What is a Closure?',
+          paragraphs: [
+            "A closure is the combination of a function bundled together with references to its surrounding state (the lexical environment).",
+            "In other words, a closure gives an inner function access to the outer function's variables. In JavaScript, closures are created every time a function is created, at function creation time."
+          ]
+        },
+        {
+          type: 'takeaway',
+          title: 'Key Takeaway',
+          text: 'Normally, when a function finishes executing, its execution stack frame is popped from the call stack and its local variables are garbage collected. However, if an inner function references any of those local variables, the outer function\'s lexical environment record is kept alive in the Memory Heap because the inner function still holds a reference to it.'
+        },
+        {
+          type: 'text',
+          heading: '2. Enclosing State: Practical Applications',
+          paragraphs: [
+            "Closures allow you to create private state variables that can only be modified by specific methods, simulating object-oriented encapsulation.",
+            "They are heavily used in factory functions, event handlers, and asynchronous callback chains."
+          ]
+        },
+        {
+          type: 'quote',
+          text: '“Functions close over their birth lexical environment.”'
+        }
+      ]
+    },
+    summary: 'A closure is an inner function that retains access to its outer lexical environment variables even after the outer function has completed execution. This occurs because the variables are stored in the memory heap.',
+    codeHtml: `<span class="code-comment">// Creating a closure function</span>
+<span class="code-keyword">function</span> <span class="code-function">createCounter</span>() {
+  <span class="code-keyword">let</span> <span class="code-variable">count</span> <span class="code-operator">=</span> <span class="code-number">0</span>; <span class="code-comment">// enclosed private variable</span>
+  <span class="code-keyword">return</span> <span class="code-keyword">function</span>() {
+    <span class="code-variable">count</span><span class="code-operator">++</span>;
+    <span class="code-keyword">return</span> <span class="code-variable">count</span>;
+  };
+}
+<br/>
+<span class="code-keyword">const</span> <span class="code-variable">counter</span> <span class="code-operator">=</span> <span class="code-function">createCounter</span>();
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-function">counter</span>()); <span class="code-comment">// 1</span>
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-function">counter</span>()); <span class="code-comment">// 2</span>`,
+    sandboxCode: `// Execute closure function inside the playground
+function makeSecureKey(key) {
+  const secretKey = key; // local variable
+  return {
+    getKey: function() {
+      return secretKey; // closure reference
+    }
+  };
+}
+
+const keychain = makeSecureKey("A59B2X");
+console.log("Retrieved key value:", keychain.getKey());
+console.log("Direct access attempt:", keychain.secretKey); // undefined`,
+    quiz: {
+      question: 'Why does an outer function’s local variable remain available inside a returned inner function after the outer function returned?',
+      options: [
+        'The engine copies the variables from the heap onto the call stack.',
+        'The inner function holds a reference to the outer function’s lexical environment in the memory heap, preventing garbage collection.',
+        'The outer function continues running in the background on another thread.',
+        'Global scope variables automatically duplicate local variables.'
+      ],
+      answerIdx: 1,
+      explanation: 'Because the returned inner function retains a lexical reference to its parent scope, the engine keeps that lexical scope record alive in the heap instead of garbage collecting it.'
+    },
+    references: [
+      { name: 'MDN Web Docs: Closures', url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures' }
+    ]
+  },
+  {
+    id: 'obj-prototypes',
+    title: 'Prototypes & Delegation',
+    heading: 'Prototypal Delegation & Inheritance',
+    subtitle: 'Understanding the delegation lookup chain and the difference between prototype and __proto__.',
+    badges: [
+      { icon: Clock, text: '15 min read', color: 'text-purple-400' },
+      { icon: Sparkles, text: 'Inheritance', color: 'text-[#C084FC]' },
+      { icon: Compass, text: 'Intermediate', color: 'text-space-yellow' },
+      { icon: Layers, text: 'First Principles', color: 'text-blue-400' }
+    ],
+    notes: {
+      blocks: [
+        {
+          type: 'text',
+          heading: '1. What is Prototypal Delegation?',
+          paragraphs: [
+            "In classical object-oriented languages (like Java or C++), inheritance copies behaviors from a class blueprint to an instance. JavaScript does not do this.",
+            "JavaScript uses prototypal delegation. Every object has a hidden property called `[[Prototype]]` (exposed in browsers as the legacy `__proto__` property or via `Object.getPrototypeOf`).",
+            "When you access a property on an object, the engine first checks the object itself. If it is not found, the engine delegates the lookup to the object's prototype, climbing the prototype chain until it either finds the property or reaches `Object.prototype.__proto__` which is `null`."
+          ]
+        },
+        {
+          type: 'takeaway',
+          title: 'Key Takeaway',
+          text: 'Using delegation saves memory. Instead of copy-assigning methods to thousands of instances, all instances share a single reference to the methods on their prototype object.'
+        },
+        {
+          type: 'text',
+          heading: '2. The Prototype Property on Functions',
+          paragraphs: [
+            "A common source of confusion is the difference between `prototype` and `__proto__`:",
+            "- `__proto__` is the link present on every object instance, pointing to its inherited prototype.",
+            "- The `prototype` property only exists on constructor functions (or classes). It is the blueprint object that will be assigned as the `__proto__` of any instances created with the `new` keyword."
+          ]
+        },
+        {
+          type: 'quote',
+          text: '“JavaScript does not duplicate; it links.”'
+        }
+      ]
+    },
+    summary: 'JavaScript objects inherit behaviors through prototypal delegation. Every object links to a prototype object via prototype pointers. Lookups climb this chain until the property is found or null is reached.',
+    codeHtml: `<span class="code-comment">// Constructing prototypal link</span>
+<span class="code-keyword">const</span> <span class="code-variable">animal</span> <span class="code-operator">=</span> { <span class="code-variable">eats</span>: <span class="code-keyword">true</span> };
+<span class="code-keyword">const</span> <span class="code-variable">rabbit</span> <span class="code-operator">=</span> <span class="code-variable">Object</span>.<span class="code-function">create</span>(<span class="code-variable">animal</span>);
+<br/>
+<span class="code-comment">// "eats" is delegated up to "animal"</span>
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-variable">rabbit</span>.<span class="code-variable">eats</span>); <span class="code-comment">// true</span>
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-variable">rabbit</span>.<span class="code-variable">hasOwnProperty</span>(<span class="code-string">"eats"</span>)); <span class="code-comment">// false</span>`,
+    sandboxCode: `// Create constructors and trace __proto__ links
+function Robot(name) {
+  this.name = name;
+}
+Robot.prototype.greet = function() {
+  return \`Beep Boop! I am \${this.name}\`;
+};
+
+const sentinel = new Robot("Sentinel 1");
+
+console.log("Sentinel message:", sentinel.greet());
+console.log("sentinel.__proto__ === Robot.prototype:", sentinel.__proto__ === Robot.prototype); // true
+console.log("Robot.prototype.__proto__ === Object.prototype:", Robot.prototype.__proto__ === Object.prototype); // true`,
+    quiz: {
+      question: 'What is the final endpoint of all prototype chains in JavaScript?',
+      options: [
+        'Function.prototype',
+        'Object.prototype',
+        'Object.prototype.__proto__ (which is null)',
+        'window'
+      ],
+      answerIdx: 2,
+      explanation: 'All standard objects inherit from Object.prototype. The prototype link of Object.prototype is null, which terminates the prototype chain lookup.'
+    },
+    references: [
+      { name: 'MDN Web Docs: Inheritance and the prototype chain', url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain' }
+    ]
+  },
+  {
+    id: 'obj-manipulation',
+    title: 'Mutation & Object Freezing',
+    heading: 'Object Mutability and Integrity Control',
+    subtitle: 'Exploring reference mutation, copying mechanisms, and language features to freeze or seal object references.',
+    badges: [
+      { icon: Clock, text: '12 min read', color: 'text-purple-400' },
+      { icon: Sparkles, text: 'Object State', color: 'text-[#C084FC]' },
+      { icon: Compass, text: 'Intermediate', color: 'text-space-yellow' },
+      { icon: Layers, text: 'State Security', color: 'text-blue-400' }
+    ],
+    notes: {
+      blocks: [
+        {
+          type: 'text',
+          heading: '1. Object Mutability and Reference Sharing',
+          paragraphs: [
+            "Because objects are stored as reference addresses in heap memory, mutating an object property changes the shared data slot.",
+            "Any other variable referencing that same memory address immediately reflects the change. This is the root cause of side effects in programming.",
+            "To prevent references from being modified, JavaScript provides three levels of integrity control:"
+          ]
+        },
+        {
+          type: 'takeaway',
+          title: 'Object Protection Levels',
+          text: '1. preventExtensions(): Prevents adding new properties, but existing ones can be deleted or modified.\n2. seal(): Prevents adding or deleting properties. Existing properties can still be modified.\n3. freeze(): Prevents adding, deleting, or modifying properties. All properties become read-only and non-configurable.'
+        },
+        {
+          type: 'text',
+          heading: '2. Shallow Freezing Quirks',
+          paragraphs: [
+            "It is crucial to understand that `Object.freeze()` is shallow. It only freezes the immediate properties of the object.",
+            "If an object property contains a reference to a nested object, that nested object is not frozen and can still be mutated normally (deep freezing requires recursing through all properties and freezing nested objects manually)."
+          ]
+        }
+      ]
+    },
+    summary: 'JavaScript objects are mutable by default. Mutability can be controlled using Object.preventExtensions(), Object.seal(), and Object.freeze(). Note that freezing is shallow and does not automatically lock nested object references.',
+    codeHtml: `<span class="code-comment">// Shallow freezing demonstration</span>
+<span class="code-keyword">const</span> <span class="code-variable">config</span> <span class="code-operator">=</span> {
+  <span class="code-variable">api</span>: <span class="code-string">"https://core.api"</span>,
+  <span class="code-variable">meta</span>: { <span class="code-variable">version</span>: <span class="code-number">1.2</span> }
+};
+<span class="code-variable">Object</span>.<span class="code-function">freeze</span>(<span class="code-variable">config</span>);
+<br/>
+<span class="code-variable">config</span>.<span class="code-variable">api</span> <span class="code-operator">=</span> <span class="code-string">"mutated"</span>; <span class="code-comment">// Ignored silently (or throws TypeError in strict mode)</span>
+<span class="code-variable">config</span>.<span class="code-variable">meta</span>.<span class="code-variable">version</span> <span class="code-operator">=</span> <span class="code-number">2.0</span>; <span class="code-comment">// Works! Nested objects are NOT frozen!</span>`,
+    sandboxCode: `// Try modifying properties on a frozen object
+"use strict"; // Enable strict mode to raise errors instead of silent ignores
+
+const systemProfile = {
+  host: "V8_Sandbox",
+  credits: { status: "Active" }
+};
+
+Object.freeze(systemProfile);
+console.log("Is systemProfile frozen?", Object.isFrozen(systemProfile));
+
+try {
+  systemProfile.host = "New Host";
+} catch (err) {
+  console.log("Direct mutation failed:", err.message);
+}
+
+// Mutating nested reference
+systemProfile.credits.status = "Suspended";
+console.log("Nested property status:", systemProfile.credits.status); // Suspended`,
+    quiz: {
+      question: 'What is the difference between `Object.seal()` and `Object.freeze()`?',
+      options: [
+        'seal() makes properties read-only, while freeze() allows modifications.',
+        'seal() prevents adding/deleting properties but allows modifications; freeze() prevents adding, deleting, and modifying.',
+        'seal() works deep, while freeze() is shallow.',
+        'There is no difference; they are aliases for the same ECMA specification.'
+      ],
+      answerIdx: 1,
+      explanation: 'Object.seal() prevents property addition and deletion but allows writing to existing properties. Object.freeze() goes further by making existing properties read-only.'
+    },
+    references: [
+      { name: 'MDN Web Docs: Object.freeze()', url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze' }
+    ]
+  },
+  {
+    id: 'arr-mechanics',
+    title: 'Arrays Under the Hood',
+    heading: 'JavaScript Arrays Under the Hood',
+    subtitle: 'Understanding array allocation, dynamic length behavior, and how arrays behave as specialized objects.',
+    badges: [
+      { icon: Clock, text: '12 min read', color: 'text-purple-400' },
+      { icon: Sparkles, text: 'Array Memory', color: 'text-[#C084FC]' },
+      { icon: Compass, text: 'Intermediate', color: 'text-space-yellow' },
+      { icon: Layers, text: 'Under the Hood', color: 'text-blue-400' }
+    ],
+    notes: {
+      blocks: [
+        {
+          type: 'text',
+          heading: '1. Arrays are Objects with Magic Properties',
+          paragraphs: [
+            "In low-level languages like C, arrays are contiguous blocks of memory of fixed size, where elements are index-accessed via simple memory math offsets.",
+            "In JavaScript, arrays are not contiguous memory structures. Under the hood, they are actually specialized objects with string keys representing indices (e.g. `'0'`, `'1'`) and a magic, auto-updating `length` property.",
+            "Because arrays are objects, you can assign non-numerical property keys to them. The `length` property automatically tracks the largest numerical index plus one."
+          ]
+        },
+        {
+          type: 'takeaway',
+          title: 'Key Takeaway',
+          text: 'Because JS arrays are objects, they can be "sparse" (containing empty slots). If you write `const a = []; a[100] = "val";`, JavaScript does not allocate 101 empty slots in memory. It simply creates an object with a single key "100" and a length value of 101. The slots from 0 to 99 are completely empty (returning undefined on lookup), degrading array optimization to hash table speeds.'
+        },
+        {
+          type: 'text',
+          heading: '2. Engine Optimizations',
+          paragraphs: [
+            "Modern engines (like V8) optimize array storage. If your array contains contiguous integers or floats starting at index 0, V8 stores them in a fast, contiguous C-like array block.",
+            "However, if you insert different data types or make the array sparse, V8 transitions the array representation from fast contiguous elements (HOLEY elements) to a dictionary-like hash table mapping, which significantly reduces access speeds."
+          ]
+        }
+      ]
+    },
+    summary: 'JavaScript arrays are specialized objects with numerical keys and a dynamic length property. Engines optimize them into contiguous memory blocks unless they become sparse or contain mixed types, causing them to degrade to standard hash table lookup speeds.',
+    codeHtml: `<span class="code-comment">// Dynamic length and sparse index allocation</span>
+<span class="code-keyword">const</span> <span class="code-variable">spacedArray</span> <span class="code-operator">=</span> [];
+<span class="code-variable">spacedArray</span>[<span class="code-number">5</span>] <span class="code-operator">=</span> <span class="code-string">"sixth"</span>;
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-variable">spacedArray</span>.<span class="code-variable">length</span>); <span class="code-comment">// 6</span>
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-variable">spacedArray</span>[<span class="code-number">2</span>]); <span class="code-comment">// undefined</span>
+<br/>
+<span class="code-comment">// Arrays are objects</span>
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-keyword">typeof</span> []); <span class="code-comment">// "object"</span>`,
+    sandboxCode: `// Check indices and magic length property
+const spacecrafts = ["Apollo", "Voyager", "Sputnik"];
+spacecrafts[10] = "Artemis"; // introduce holes
+
+console.log("Length:", spacecrafts.length); // 11
+console.log("Keys present:", Object.keys(spacecrafts)); // ["0", "1", "2", "10"]
+
+// Mutating length manually truncate elements
+spacecrafts.length = 2; 
+console.log("Truncated array:", spacecrafts); // ["Apollo", "Voyager"]`,
+    quiz: {
+      question: 'What is the actual type of an array in JavaScript when evaluated using the `typeof` operator?',
+      options: [
+        '"array"',
+        '"object"',
+        '"collection"',
+        '"list"'
+      ],
+      answerIdx: 1,
+      explanation: 'Because arrays are implemented as specialized objects with integer keys and a dynamic length property, `typeof []` evaluates to `"object"`.'
+    },
+    references: [
+      { name: 'MDN Web Docs: Array', url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array' }
+    ]
+  },
+  {
+    id: 'arr-methods',
+    title: 'Functional Array Methods',
+    heading: 'Declarative Array Operations',
+    subtitle: 'Mastering map, filter, and reduce and why functional methods avoid side effects.',
+    badges: [
+      { icon: Clock, text: '15 min read', color: 'text-purple-400' },
+      { icon: Sparkles, text: 'Functional Method', color: 'text-[#C084FC]' },
+      { icon: Compass, text: 'Intermediate', color: 'text-space-yellow' },
+      { icon: Layers, text: 'Iteration Heuristics', color: 'text-blue-400' }
+    ],
+    notes: {
+      blocks: [
+        {
+          type: 'text',
+          heading: '1. Declarative vs Imperative Loop Iterations',
+          paragraphs: [
+            "Imperative programming describes *how* to do something (e.g. creating a `for` loop, updating an index, pushing to an array manually).",
+            "Declarative programming describes *what* to do. Methods like `map`, `filter`, and `reduce` are declarative. They abstract away the loop index and control statements, executing a callback function on every element instead."
+          ]
+        },
+        {
+          type: 'takeaway',
+          title: 'Avoid State Mutation',
+          text: 'Functional array methods do not mutate the original array. Instead, they allocate brand-new array spaces in the heap memory to store the results, maintaining immutability and reducing side effects.'
+        },
+        {
+          type: 'text',
+          heading: '2. The Power of Reduce',
+          paragraphs: [
+            "While `map` transforms each element and `filter` removes elements, `reduce` is the most versatile method. It takes an array and compiles it down to a single value (which could be a number, a string, an object, or another array).",
+            "The reducer callback receives an accumulator (holding the running result) and the current element. You must always return the updated accumulator from each iteration step."
+          ]
+        },
+        {
+          type: 'quote',
+          text: '“Map transforms; filter subsets; reduce aggregates.”'
+        }
+      ]
+    },
+    summary: 'Functional array methods (map, filter, reduce) represent a declarative programming model. They isolate iterator variables internally and construct new structures in the memory heap instead of mutating inputs.',
+    codeHtml: `<span class="code-comment">// Doubling elements cleanly</span>
+<span class="code-keyword">const</span> <span class="code-variable">numbers</span> <span class="code-operator">=</span> [<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>];
+<span class="code-keyword">const</span> <span class="code-variable">doubled</span> <span class="code-operator">=</span> <span class="code-variable">numbers</span>.<span class="code-function">map</span>(<span class="code-variable">n</span> <span class="code-operator">=&gt;</span> <span class="code-variable">n</span> <span class="code-operator">*</span> <span class="code-number">2</span>); <span class="code-comment">// doubled is [2, 4, 6]</span>
+<br/>
+<span class="code-comment">// Reducing to a sum</span>
+<span class="code-keyword">const</span> <span class="code-variable">sum</span> <span class="code-operator">=</span> <span class="code-variable">numbers</span>.<span class="code-function">reduce</span>((<span class="code-variable">acc</span>, <span class="code-variable">curr</span>) <span class="code-operator">=&gt;</span> <span class="code-variable">acc</span> <span class="code-operator">+</span> <span class="code-variable">curr</span>, <span class="code-number">0</span>);
+<span class="code-variable">console</span>.<span class="code-function">log</span>(<span class="code-variable">sum</span>); <span class="code-comment">// 6</span>`,
+    sandboxCode: `// Experiment with map, filter, and reduce operations
+const inventory = [
+  { name: "Laser", price: 120 },
+  { name: "Thruster", price: 800 },
+  { name: "Sensor", price: 50 }
+];
+
+// 1. Filter items under 200 credits
+const budgetItems = inventory.filter(item => item.price < 200);
+console.log("Budget Items:", budgetItems);
+
+// 2. Sum the total price using reduce
+const totalCost = inventory.reduce((total, item) => total + item.price, 0);
+console.log("Total Credits Sum:", totalCost); // 970`,
+    quiz: {
+      question: 'Which array helper method should be used to compile all items of an array into a single accumulated result value?',
+      options: [
+        'Array.prototype.map()',
+        'Array.prototype.filter()',
+        'Array.prototype.reduce()',
+        'Array.prototype.forEach()'
+      ],
+      answerIdx: 2,
+      explanation: 'Array.prototype.reduce() runs a reducer callback on all array elements, returning a single accumulated result.'
+    },
+    references: [
+      { name: 'MDN Web Docs: Array.prototype.reduce()', url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce' }
+    ]
+  }
+];
+
+// Sidebar links mapping to routes
+const SIDEBAR_NAV = [
+  { label: 'Dashboard', icon: Home, path: '/notes' },
+  { label: 'Roadmap', icon: Compass, path: '/roadmap' },
+  { label: 'Playground', icon: Terminal, path: '/playground' },
+  { label: 'AI Mentor', icon: Cpu, path: '/mentor' },
+  { label: 'Bookmarks', icon: Bookmark, path: '/notes' }
+];
+
+const CHAPTERS_LIST = [
+  {
+    phase: '01. Introduction to JS',
+    topics: [
+      { id: 'intro-exists', label: 'Why JavaScript Exists' },
+      { id: 'browser-env', label: 'The Browser Environment' },
+      { id: 'how-works', label: 'How JS Works' },
+      { id: 'standards', label: 'ECMAScript & Standards' }
+    ]
+  },
+  {
+    phase: '02. Data Types',
+    topics: [
+      { id: 'data-primitives', label: 'Primitives vs Objects' },
+      { id: 'data-coercion', label: 'Type Coercion & Truthiness' }
+    ]
+  },
+  {
+    phase: '03. Operators',
+    topics: [
+      { id: 'ops-arithmetic', label: 'Arithmetic & Type Casting' },
+      { id: 'ops-comparison', label: 'Equality == vs ===' }
+    ]
+  },
+  {
+    phase: '04. Loops',
+    topics: [
+      { id: 'loops-control', label: 'For, While & Flow' },
+      { id: 'loops-iteration', label: 'For...in vs For...of' }
+    ]
+  },
+  {
+    phase: '05. Functions',
+    topics: [
+      { id: 'func-execution', label: 'Execution Context & Scope' },
+      { id: 'func-closures', label: 'Closures & Lexical Scope' }
+    ]
+  },
+  {
+    phase: '06. Objects',
+    topics: [
+      { id: 'obj-prototypes', label: 'Prototypes & Delegation' },
+      { id: 'obj-manipulation', label: 'Mutation & Object Freezing' }
+    ]
+  },
+  {
+    phase: '07. Arrays',
+    topics: [
+      { id: 'arr-mechanics', label: 'Arrays Under the Hood' },
+      { id: 'arr-methods', label: 'Functional Array Methods' }
+    ]
+  },
+  { phase: '08. DOM & Events', topics: [] },
+  { phase: '09. Asynchronous JS', topics: [] },
+  { phase: '10. Modern JavaScript', topics: [] }
+];
+
+export default function NotesView() {
+  const location = useLocation();
+  const [activeTopic, setActiveTopic] = useState('intro-exists');
+  const [activeTab, setActiveTab] = useState('notes');
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 1024);
+  const [themeDark, setThemeDark] = useState(() => {
+    return !document.documentElement.classList.contains('light');
+  });
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [searchActiveIndex, setSearchActiveIndex] = useState(0);
+  const searchInputRef = useRef(null);
+
+  // Sync routing state from Roadmap
+  useEffect(() => {
+    if (location.state?.activeTopicId) {
+      setActiveTopic(location.state.activeTopicId);
+    }
+  }, [location.state?.activeTopicId]);
+
+  // Global search hotkeys listener
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+        setSearchFocused(true);
+      }
+      if (e.key === 'Escape') {
+        setSearchQuery('');
+        setSearchFocused(false);
+        searchInputRef.current?.blur();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const searchResults = searchQuery.trim() === '' ? [] : CHAPTERS_DATA.filter(chapter => {
+    const query = searchQuery.toLowerCase();
+    return (
+      chapter.title.toLowerCase().includes(query) ||
+      chapter.subtitle.toLowerCase().includes(query) ||
+      chapter.heading.toLowerCase().includes(query) ||
+      (chapter.notes && chapter.notes.blocks && chapter.notes.blocks.some(block => 
+        (block.heading && block.heading.toLowerCase().includes(query)) ||
+        (block.paragraphs && block.paragraphs.some(p => p.toLowerCase().includes(query)))
+      ))
+    );
+  });
+
+  const handleSearchKeyDown = (e) => {
+    if (searchResults.length === 0) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSearchActiveIndex((prev) => (prev + 1) % searchResults.length);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSearchActiveIndex((prev) => (prev - 1 + searchResults.length) % searchResults.length);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const selected = searchResults[searchActiveIndex];
+      if (selected) {
+        setActiveTopic(selected.id);
+        setSearchQuery('');
+        setSearchFocused(false);
+        searchInputRef.current?.blur();
+      }
+    }
+  };
+
+  useEffect(() => {
+    const handleSync = () => {
+      setThemeDark(!document.documentElement.classList.contains('light'));
+    };
+    window.addEventListener('themechange', handleSync);
+    return () => window.removeEventListener('themechange', handleSync);
+  }, []);
+
+  const handleThemeToggle = () => {
+    if (document.documentElement.classList.contains('light')) {
+      document.documentElement.classList.remove('light');
+      localStorage.setItem('theme', 'dark');
+      setThemeDark(true);
+    } else {
+      document.documentElement.classList.add('light');
+      localStorage.setItem('theme', 'light');
+      setThemeDark(false);
+    }
+    window.dispatchEvent(new Event('themechange'));
+  };
+
+  // Playground Sandbox
+  const [playgroundCode, setPlaygroundCode] = useState('');
+  const [consoleLogs, setConsoleLogs] = useState([]);
+  const [copiedCode, setCopiedCode] = useState(false);
+
+  // Quiz State
+  const [selectedQuizOpt, setSelectedQuizOpt] = useState(null);
+  const [quizSubmitted, setQuizSubmitted] = useState(false);
+  const [quizIsCorrect, setQuizIsCorrect] = useState(null);
+
+  // Active Content
+  const currentChapter = CHAPTERS_DATA.find(ch => ch.id === activeTopic) || CHAPTERS_DATA[0];
+
+  const activeChapterInfo = CHAPTERS_LIST.find(ch => ch.topics.some(t => t.id === activeTopic)) || CHAPTERS_LIST[0];
+  const activeTopicInfo = activeChapterInfo.topics.find(t => t.id === activeTopic) || activeChapterInfo.topics[0];
+
+  const allTopics = CHAPTERS_LIST.flatMap(ch => ch.topics);
+  const currentIndex = allTopics.findIndex(t => t.id === activeTopic);
+  const prevTopic = currentIndex > 0 ? allTopics[currentIndex - 1] : null;
+  const nextTopic = currentIndex < allTopics.length - 1 ? allTopics[currentIndex + 1] : null;
+
+  // Sync playground
+  useEffect(() => {
+    setPlaygroundCode(currentChapter.sandboxCode);
+    setConsoleLogs([]);
+    setSelectedQuizOpt(null);
+    setQuizSubmitted(false);
+    setQuizIsCorrect(null);
+  }, [activeTopic, currentChapter]);
+
+  const handleRunCode = () => {
+    setConsoleLogs([]);
+    const logs = [];
+    const originalLog = console.log;
+    console.log = (...args) => {
+      logs.push(args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' '));
+    };
+
+    try {
+      const result = new Function(playgroundCode)();
+      if (result !== undefined) {
+        logs.push(`↳ Return value: ${typeof result === 'object' ? JSON.stringify(result) : String(result)}`);
+      }
+    } catch (err) {
+      logs.push(`✖ Error: ${err.message}`);
+    }
+
+    console.log = originalLog;
+    setConsoleLogs(logs.length > 0 ? logs : ["Code executed successfully with no logs."]);
+  };
+
+  const handleResetCode = () => {
+    setPlaygroundCode(currentChapter.sandboxCode);
+    setConsoleLogs([]);
+  };
+
+  const handleCopyCode = () => {
+    const cleanText = currentChapter.codeHtml.replace(/<[^>]*>/g, '');
+    navigator.clipboard.writeText(cleanText);
+    setCopiedCode(true);
+    setTimeout(() => setCopiedCode(false), 2000);
+  };
+
+  const handleQuizSubmit = () => {
+    if (selectedQuizOpt === null) return;
+    const isCorrect = selectedQuizOpt === currentChapter.quiz.answerIdx;
+    setQuizIsCorrect(isCorrect);
+    setQuizSubmitted(true);
+  };
+
+  const tabs = [
+    { id: 'notes', label: 'Notes' },
+    { id: 'summary', label: 'Summary' },
+    { id: 'code', label: 'Code Examples' },
+    { id: 'tryit', label: 'Try It' },
+    { id: 'quiz', label: 'Quiz' },
+    { id: 'references', label: 'References' }
+  ];
+
+  return (
+    <div className="relative pt-24 min-h-screen bg-[#050816] text-[#E5E7EB] flex flex-col lg:flex-row overflow-hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      {/* BACKGROUND Ambience */}
+      <div className="absolute top-0 left-0 right-0 h-[300px] bg-gradient-to-b from-[#7C3AED]/5 to-transparent pointer-events-none -z-10"></div>
+
+      {/* Floating Navigator Toggle on Mobile */}
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="fixed bottom-6 right-6 z-40 p-3 rounded-full bg-gradient-to-tr from-[#7C3AED] to-[#FACC15] text-white shadow-glow-purple lg:hidden hover:scale-105 active:scale-95 transition-transform"
+      >
+        <Menu className="h-5 w-5" />
+      </button>
+
+      {/* LEFT COLUMN: Sidebar matching screenshot */}
+      <AnimatePresence initial={false}>
+        {sidebarOpen && (
+          <motion.aside
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: 260, opacity: 1 }}
+            exit={{ width: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed lg:sticky top-24 left-4 lg:left-0 z-30 h-[calc(100vh-140px)] lg:h-[calc(100vh-120px)] w-[260px] shrink-0 overflow-y-auto flex flex-col glass-card-premium rounded-3xl p-4 mr-6"
+          >
+            {/* Logo */}
+            <div className="flex justify-start items-center pb-4 border-b border-white/5 mb-4 px-2">
+              <span className="text-space-yellow font-black font-mono text-base">{'{'}</span>
+              <span className="text-white font-display font-black text-sm">JS</span>
+              <span className="text-space-yellow font-black font-mono text-base">{'}'}</span>
+              <span className="ml-1 text-[10px] font-bold tracking-widest text-slate-300">VERSE</span>
+            </div>
+
+            {/* Sidebar Navigation */}
+            <div className="space-y-1 mb-6 px-1">
+              {SIDEBAR_NAV.map((nav) => {
+                const Icon = nav.icon;
+                return (
+                  <Link
+                    key={nav.label}
+                    to={nav.path}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-left text-xs font-semibold text-space-textSecondary hover:text-white hover:bg-white/5 transition-all"
+                  >
+                    <Icon className="h-4 w-4 text-[#7C3AED]/70" />
+                    <span>{nav.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Section separator */}
+            <div className="px-3 pb-2 flex justify-between items-center text-[10px] font-mono text-space-textSecondary uppercase tracking-widest font-bold">
+              <span>JS Fundamentals</span>
+              <ChevronDown className="h-3.5 w-3.5" />
+            </div>
+
+            {/* Expandable Chapters tree */}
+            <nav className="space-y-1.5 px-1">
+              {CHAPTERS_LIST.map((chapter) => {
+                const isExpanded = chapter.topics.some(t => t.id === activeTopic) || (activeTopic === 'intro-exists' && chapter.phase.includes('01'));
+                
+                return (
+                  <div key={chapter.phase} className="space-y-1">
+                    <button 
+                      onClick={() => {
+                        if (chapter.topics.length > 0) {
+                          setActiveTopic(chapter.topics[0].id);
+                        }
+                      }}
+                      className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs font-bold uppercase tracking-wider text-space-textPrimary hover:bg-white/5 transition-all"
+                    >
+                      <span>{chapter.phase}</span>
+                      {chapter.topics.length > 0 && <ChevronDown className="h-3.5 w-3.5 text-space-textSecondary" />}
+                    </button>
+
+                    {isExpanded && chapter.topics.map((topic) => {
+                      const isActive = activeTopic === topic.id;
+                      return (
+                        <button
+                          key={topic.id}
+                          onClick={() => {
+                            setActiveTopic(topic.id);
+                            if (window.innerWidth <= 1024) setSidebarOpen(false);
+                          }}
+                          className={`w-full flex items-center gap-2 pl-6 pr-3 py-2 rounded-xl text-left text-xs font-semibold tracking-wide transition-all border ${
+                            isActive
+                              ? 'bg-[#7C3AED]/20 border-[#7C3AED]/35 text-white shadow-[0_0_8px_rgba(124,58,237,0.15)]'
+                              : 'border-transparent text-space-textSecondary hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          <span className={`w-1 h-1 rounded-full ${isActive ? 'bg-[#FACC15]' : 'bg-[#7C3AED]/35'}`}></span>
+                          <span>{topic.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </nav>
+
+            {/* Mock Go Premium Drawer matching screenshot */}
+            <div className="mt-auto pt-4 border-t border-white/5 px-1">
+              <div className="rounded-2xl bg-gradient-to-tr from-[#7C3AED]/10 to-[#FACC15]/5 p-3 border border-[#7C3AED]/20 text-left space-y-2">
+                <div className="flex items-center gap-1.5 font-display font-bold text-[10px] text-space-yellow uppercase tracking-wider">
+                  <Sparkles className="h-3.5 w-3.5 text-space-yellow" />
+                  <span>Go Premium</span>
+                </div>
+                <p className="text-[9px] text-space-textSecondary leading-normal">
+                  Unlock all lessons, AI help, and premium playgrounds.
+                </p>
+                <button
+                  onClick={() => setActiveTopic('intro-exists')}
+                  className="w-full text-center py-1.5 rounded-lg bg-gradient-to-r from-[#7C3AED] to-[#FACC15] font-display font-bold text-[9px] uppercase tracking-wider text-white hover:scale-[1.02] transition-transform"
+                >
+                  Upgrade Now
+                </button>
+              </div>
+            </div>
+
+          </motion.aside>
+        )}
+      </AnimatePresence>
+
+      {/* CENTER COLUMN: Reader panel matching screenshot */}
+      <main className="flex-1 lg:px-6 py-2 overflow-y-auto max-w-2xl mx-auto w-full z-10 text-left">
+        
+        {/* Top Header Search Bar matching screenshot */}
+        <div className="flex justify-between items-center pb-4 mb-6 border-b border-white/5">
+          {/* Search mock box */}
+          <div className="relative flex-grow max-w-sm mr-4 z-50">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-space-textSecondary" />
+            <input 
+              ref={searchInputRef}
+              type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setSearchActiveIndex(0);
+              }}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
+              onKeyDown={handleSearchKeyDown}
+              placeholder="Search notes, topics, code..."
+              className="w-full pl-9 pr-12 py-1.5 rounded-full bg-black/40 border border-white/5 text-xs text-space-textPrimary focus:outline-none"
+            />
+            <span className="absolute right-3.5 top-1/2 -translate-y-1/2 font-mono text-[9px] text-space-textSecondary/50 bg-white/5 px-1.5 py-0.5 rounded border border-white/5 uppercase">⌘K</span>
+
+            {/* Search results dropdown */}
+            {searchFocused && searchResults.length > 0 && (
+              <div className="absolute left-0 right-0 mt-2 z-50 rounded-2xl glass-card-premium border border-[#7C3AED]/25 shadow-glow-purple bg-[#050816]/95 max-h-80 overflow-y-auto p-2 space-y-1">
+                {searchResults.map((result, idx) => {
+                  const isActive = idx === searchActiveIndex;
+                  return (
+                    <button
+                      key={result.id}
+                      onMouseDown={() => {
+                        setActiveTopic(result.id);
+                        setSearchQuery('');
+                        setSearchFocused(false);
+                      }}
+                      onMouseEnter={() => setSearchActiveIndex(idx)}
+                      className={`w-full flex flex-col items-start text-left px-4 py-2.5 rounded-xl transition-all border ${
+                        isActive
+                          ? 'bg-[#7C3AED]/20 border-[#7C3AED]/40 text-white'
+                          : 'border-transparent text-space-textSecondary hover:bg-white/5 hover:text-white'
+                      }`}
+                    >
+                      <span className="font-display text-xs font-bold uppercase tracking-wider block">
+                        {result.title}
+                      </span>
+                      <span className="text-[10px] opacity-70 line-clamp-1 mt-0.5">
+                        {result.subtitle}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {searchFocused && searchQuery.trim() !== '' && searchResults.length === 0 && (
+              <div className="absolute left-0 right-0 mt-2 z-50 rounded-2xl glass-card-premium border border-white/5 shadow-lg bg-[#050816]/95 p-4 text-center text-xs text-space-textSecondary">
+                No matching topics found for &ldquo;<span className="text-white font-semibold">{searchQuery}</span>&rdquo;
+              </div>
+            )}
+          </div>
+
+          {/* Right Header items */}
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={handleThemeToggle}
+              className="p-1.5 rounded-full hover:bg-white/5 text-space-textSecondary hover:text-white"
+            >
+              {themeDark ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            </button>
+            <button className="p-1.5 rounded-full hover:bg-white/5 text-space-textSecondary hover:text-white">
+              <Bell className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Breadcrumbs matching screenshot */}
+        <div className="flex items-center gap-1.5 font-mono text-[10px] text-space-textSecondary mb-4">
+          <span>Home</span>
+          <ChevronRight className="h-3 w-3" />
+          <span>JavaScript Fundamentals</span>
+          <ChevronRight className="h-3 w-3" />
+          <span>{activeChapterInfo?.phase}</span>
+          <ChevronRight className="h-3 w-3" />
+          <span className="text-white font-semibold">{activeTopicInfo?.label}</span>
+        </div>
+
+        {/* Title & Metadata Badges */}
+        <div className="space-y-4 pb-5 border-b border-white/5">
+          <div className="flex justify-between items-center">
+            <h1 className="font-display font-black text-2xl sm:text-3xl text-white tracking-tight leading-none flex items-center gap-2">
+              {currentChapter.heading}
+              <Bookmark className="h-5 w-5 text-space-yellow cursor-pointer" />
+            </h1>
+            <Share2 className="h-4.5 w-4.5 text-space-textSecondary hover:text-white cursor-pointer" />
+          </div>
+          
+          <p className="text-space-textSecondary text-xs sm:text-sm leading-relaxed">
+            {currentChapter.subtitle}
+          </p>
+
+          {/* Badges row matching screenshot */}
+          <div className="flex flex-wrap gap-2 pt-1">
+            {currentChapter.badges.map((badge, i) => {
+              const Icon = badge.icon;
+              return (
+                <span key={i} className="inline-flex items-center gap-1.2 px-2.5 py-0.8 rounded-full bg-white/5 border border-white/5 font-mono text-[9px] text-space-textSecondary">
+                  <Icon className={`h-3 w-3 ${badge.color}`} />
+                  <span>{badge.text}</span>
+                </span>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Dynamic Navigation Tabs inside article */}
+        <div className="flex border-b border-white/5 mt-4 overflow-x-auto gap-1 py-1 scrollbar-none">
+          {tabs.map((tab) => {
+            const isTabActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`relative px-3 py-2 font-display text-[10px] font-bold tracking-widest uppercase whitespace-nowrap transition-colors duration-300 ${
+                  isTabActive ? 'text-white' : 'text-space-textSecondary hover:text-white'
+                }`}
+              >
+                <span>{tab.label}</span>
+                {isTabActive && (
+                  <motion.div
+                    layoutId="activeNotesTabUnderline"
+                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#7C3AED] to-[#FACC15] shadow-[0_0_8px_#7C3AED]"
+                  />
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Article content canvas */}
+        <div className="py-6 text-sm sm:text-[15px] leading-relaxed">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`${activeTopic}-${activeTab}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-6"
+            >
+              
+              {/* TAB 1: Notes */}
+              {activeTab === 'notes' && (
+                <div className="space-y-6 text-space-textPrimary leading-relaxed">
+                  {currentChapter.notes.blocks.map((block, bIdx) => {
+                    if (block.type === 'text') {
+                      return (
+                        <div key={bIdx} className="space-y-3">
+                          {block.heading && (
+                            <h3 className="font-display font-bold text-base text-white">{block.heading}</h3>
+                          )}
+                          {block.paragraphs.map((p, pIdx) => (
+                            <p key={pIdx} className="text-xs sm:text-sm text-space-textSecondary leading-relaxed" dangerouslySetInnerHTML={{ __html: p }} />
+                          ))}
+                        </div>
+                      );
+                    }
+                    if (block.type === 'takeaway') {
+                      return (
+                        <div key={bIdx} className="notes-takeaway-card flex gap-3.5 items-start">
+                          <div className="p-1.5 rounded-lg bg-[#7C3AED]/15 text-[#C084FC] border border-[#7C3AED]/25 shrink-0 mt-0.5">
+                            <Lightbulb className="h-4 w-4" />
+                          </div>
+                          <div>
+                            <span className="font-display font-bold text-[10px] text-[#C084FC] uppercase tracking-wider block mb-0.5">{block.title}</span>
+                            <p className="text-xs text-white leading-relaxed">
+                              {block.text}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    }
+                    if (block.type === 'quote') {
+                      return (
+                        <div key={bIdx} className="notes-quote-block">
+                          {block.text}
+                        </div>
+                      );
+                    }
+                    return null;
+                  })}
+                </div>
+              )}
+
+              {/* TAB 2: Summary */}
+              {activeTab === 'summary' && (
+                <div className="text-space-textPrimary text-xs sm:text-sm leading-relaxed max-w-2xl">
+                  <p>{currentChapter.summary}</p>
+                </div>
+              )}
+
+              {/* TAB 3: Code Examples */}
+              {activeTab === 'code' && (
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <p className="text-space-textSecondary text-xs">Review typical code implementation below:</p>
+                    <button
+                      onClick={handleCopyCode}
+                      className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-white/5 border border-white/10 hover:bg-white/10 text-space-textSecondary hover:text-white transition-colors flex items-center gap-1"
+                    >
+                      {copiedCode ? <Check className="h-3 w-3 text-green-400" /> : <Copy className="h-3 w-3" />}
+                      {copiedCode ? 'Copied' : 'Copy'}
+                    </button>
+                  </div>
+                  <div className="glass-card-premium p-5 rounded-2xl border border-[#7C3AED]/20 shadow-glow-purple font-mono text-[11px] leading-relaxed overflow-x-auto">
+                    <pre className="text-space-textPrimary">
+                      <code dangerouslySetInnerHTML={{ __html: currentChapter.codeHtml }} />
+                    </pre>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 4: Try It Sandbox */}
+              {activeTab === 'tryit' && (
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <p className="text-space-textSecondary text-xs">Compile and run live code inside this compiler node:</p>
+                    <div className="flex gap-1.5">
+                      <button
+                        onClick={handleResetCode}
+                        className="px-2.5 py-1.2 rounded-lg text-[10px] font-bold bg-white/5 border border-white/10 hover:bg-white/10 transition-colors flex items-center gap-1 text-space-textSecondary hover:text-white"
+                      >
+                        <RotateCcw className="h-3 w-3" /> Reset
+                      </button>
+                      <button
+                        onClick={handleRunCode}
+                        className="px-3 py-1.2 rounded-lg text-[10px] font-bold bg-gradient-to-r from-[#7C3AED] to-[#FACC15] text-white shadow-glow-purple flex items-center gap-1 active:scale-95 transition-transform"
+                      >
+                        <Play className="h-3 w-3 text-white fill-white" /> Run
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                    <div className="md:col-span-8 relative rounded-2xl border border-[#7C3AED]/20 bg-black/40 overflow-hidden">
+                      <textarea
+                        value={playgroundCode}
+                        onChange={(e) => setPlaygroundCode(e.target.value)}
+                        className="w-full h-64 p-5 font-mono text-xs bg-transparent text-white outline-none resize-none focus:ring-0 leading-relaxed"
+                        spellCheck="false"
+                      />
+                    </div>
+
+                    <div className="md:col-span-4 rounded-2xl border border-white/5 bg-[#050816] flex flex-col overflow-hidden">
+                      <div className="px-4 py-2 border-b border-white/5 bg-white/5 font-display text-[9px] tracking-widest font-bold text-space-textSecondary uppercase">
+                        CONSOLE OUTPUT
+                      </div>
+                      <div className="p-4 flex-1 font-mono text-[10px] space-y-2 overflow-y-auto h-56 text-green-400">
+                        {consoleLogs.length === 0 ? (
+                          <span className="text-space-textSecondary/40 italic">Process clean. Run compiler to verify.</span>
+                        ) : (
+                          consoleLogs.map((log, idx) => (
+                            <div key={idx} className="whitespace-pre-wrap leading-relaxed border-b border-white/5 pb-1">
+                              {log}
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 5: Quiz */}
+              {activeTab === 'quiz' && (
+                <div className="space-y-4">
+                  <p className="text-space-textSecondary text-xs">Test your comprehension below:</p>
+                  
+                  <div className="glass-card-premium p-6 rounded-2xl border border-[#7C3AED]/15 space-y-5">
+                    <h4 className="font-display font-bold text-sm sm:text-base text-white">
+                      {currentChapter.quiz.question}
+                    </h4>
+
+                    <div className="space-y-2.5">
+                      {currentChapter.quiz.options.map((opt, idx) => {
+                        const isSelected = selectedQuizOpt === idx;
+                        return (
+                          <button
+                            key={idx}
+                            onClick={() => {
+                              if (!quizSubmitted) setSelectedQuizOpt(idx);
+                            }}
+                            disabled={quizSubmitted}
+                            className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl text-left text-xs sm:text-sm font-bold transition-all border ${
+                              isSelected 
+                                ? 'bg-[#7C3AED]/15 border-[#7C3AED] text-white shadow-glow-purple' 
+                                : 'bg-[#050816]/40 border-white/5 text-space-textPrimary hover:border-white/15'
+                            }`}
+                          >
+                            <span>{opt}</span>
+                            <span className="w-4.5 h-4.5 rounded-full border border-white/10 flex items-center justify-center shrink-0">
+                              {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-space-yellow shadow-[0_0_8px_#FACC15]" />}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {!quizSubmitted ? (
+                      <button
+                        onClick={handleQuizSubmit}
+                        disabled={selectedQuizOpt === null}
+                        className="px-5 py-2 rounded-lg text-[10px] font-display font-bold tracking-widest uppercase bg-gradient-to-r from-[#7C3AED] to-[#FACC15] text-white shadow-glow-purple disabled:opacity-50"
+                      >
+                        Submit Response
+                      </button>
+                    ) : (
+                      <div className="space-y-3 pt-2">
+                        <div className="flex items-center gap-2">
+                          {quizIsCorrect ? (
+                            <>
+                              <CheckCircle className="h-5 w-5 text-green-400" />
+                              <span className="text-green-400 font-bold font-display text-xs tracking-wider uppercase">Correct Answer!</span>
+                            </>
+                          ) : (
+                            <>
+                              <XCircle className="h-5 w-5 text-red-400" />
+                              <span className="text-red-400 font-bold font-display text-xs tracking-wider uppercase">Incorrect Answer.</span>
+                            </>
+                          )}
+                        </div>
+                        <p className="text-space-textSecondary text-xs sm:text-sm italic leading-relaxed">
+                          {currentChapter.quiz.explanation}
+                        </p>
+                        <button
+                          onClick={() => {
+                            setSelectedQuizOpt(null);
+                            setQuizSubmitted(false);
+                            setQuizIsCorrect(null);
+                          }}
+                          className="px-3.5 py-1.5 rounded-lg text-[10px] font-bold bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+                        >
+                          Retry Quiz
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 6: References */}
+              {activeTab === 'references' && (
+                <div className="space-y-4">
+                  <p className="text-space-textSecondary text-xs">External specifications and document links:</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {currentChapter.references.map((ref) => (
+                      <a
+                        key={ref.name}
+                        href={ref.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="glass-card-premium p-4 rounded-xl flex items-center justify-between border border-white/5 hover:border-[#7C3AED]/40 hover:bg-[#7C3AED]/5 transition-all group"
+                      >
+                        <span className="text-xs sm:text-sm font-bold text-white group-hover:text-space-yellow transition-colors">{ref.name}</span>
+                        <ExternalLink className="h-4 w-4 text-space-textSecondary group-hover:text-white" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Previous / Next buttons matching screenshot */}
+        <div className="flex justify-between items-center border-t border-white/5 pt-6 mt-10 gap-4">
+          <button 
+            onClick={() => prevTopic && setActiveTopic(prevTopic.id)}
+            disabled={!prevTopic}
+            className={`flex items-center gap-3 p-3.5 rounded-xl border border-white/5 bg-white/5 text-left flex-1 max-w-[240px] transition-all ${
+              prevTopic 
+                ? 'hover:border-white/15 cursor-pointer opacity-100' 
+                : 'opacity-30 cursor-not-allowed'
+            }`}
+          >
+            <ArrowLeft className="h-5 w-5 text-space-textSecondary shrink-0" />
+            <div>
+              <span className="block font-mono text-[9px] text-space-textSecondary uppercase font-bold tracking-wider">Previous</span>
+              <span className="block text-xs font-bold text-white truncate max-w-[150px] sm:max-w-[180px]">
+                {prevTopic ? prevTopic.label : 'None'}
+              </span>
+            </div>
+          </button>
+          
+          <button 
+            onClick={() => nextTopic && setActiveTopic(nextTopic.id)}
+            disabled={!nextTopic}
+            className={`flex items-center justify-between gap-3 p-3.5 rounded-xl border border-white/5 bg-white/5 text-right flex-1 max-w-[240px] transition-all ${
+              nextTopic 
+                ? 'hover:border-white/15 cursor-pointer opacity-100' 
+                : 'opacity-30 cursor-not-allowed'
+            }`}
+          >
+            <div>
+              <span className="block font-mono text-[9px] text-space-textSecondary uppercase font-bold tracking-wider">Next</span>
+              <span className="block text-xs font-bold text-white truncate max-w-[150px] sm:max-w-[180px]">
+                {nextTopic ? nextTopic.label : 'None'}
+              </span>
+            </div>
+            <ArrowRight className="h-5 w-5 text-space-textSecondary shrink-0" />
+          </button>
+        </div>
+
+      </main>
+
+      {/* RIGHT COLUMN: TOC, AI mentor prompt box & Links matching screenshot */}
+      <aside className="w-[260px] shrink-0 sticky top-28 h-[calc(100vh-140px)] overflow-y-auto hidden xl:block p-4 space-y-6 border-l border-white/5 ml-6">
+        
+        {/* On This Page List */}
+        <div className="space-y-3 text-left">
+          <span className="font-display font-bold text-[10px] tracking-widest text-white uppercase flex items-center gap-1.5">
+            <List className="h-4 w-4 text-[#FACC15]" /> On this page
+          </span>
+          <div className="space-y-2 border-l border-white/5 pl-3">
+            <button className="block text-[11px] text-left font-bold tracking-wider uppercase text-[#FACC15] border-l-2 border-[#FACC15] -ml-[14px] pl-3.5">
+              1. The Web Was Born Dead
+            </button>
+            <button className="block text-[11px] text-left font-bold tracking-wider uppercase text-space-textSecondary hover:text-white pl-0.5">
+              2. Enter Sun, and a Language Called Java
+            </button>
+            <button className="block text-[11px] text-left font-bold tracking-wider uppercase text-space-textSecondary hover:text-white pl-0.5">
+              3. The Secret War Against Microsoft
+            </button>
+            <button className="block text-[11px] text-left font-bold tracking-wider uppercase text-space-textSecondary hover:text-white pl-0.5">
+              4. Why a SECOND Language Was Needed
+            </button>
+            <button className="block text-[11px] text-left font-bold tracking-wider uppercase text-space-textSecondary hover:text-white pl-0.5">
+              5. Ten Days in May
+            </button>
+            <button className="block text-[11px] text-left font-bold tracking-wider uppercase text-space-textSecondary hover:text-white pl-0.5">
+              6. Two Languages, Side by Side
+            </button>
+            <button className="block text-[11px] text-left font-bold tracking-wider uppercase text-space-textSecondary hover:text-white pl-0.5">
+              7. How the Little Brother Won
+            </button>
+          </div>
+        </div>
+
+        {/* AI Mentor Card matching screenshot */}
+        <div className="rounded-2xl border border-white/5 bg-[#050816] p-4 text-left space-y-4 shadow-sm">
+          <div className="flex items-center gap-1.5 text-space-yellow font-display font-bold text-[10px] uppercase tracking-wider">
+            <Cpu className="h-4 w-4 text-[#C084FC]" />
+            <span>AI Mentor</span>
+          </div>
+          <p className="text-[9px] text-space-textSecondary leading-normal">
+            Ask me anything about this topic!
+          </p>
+          
+          <div className="space-y-1.5">
+            <Link to="/mentor" className="block p-2 rounded bg-white/5 border border-white/5 text-[9px] text-space-textPrimary hover:border-[#7C3AED]/35 hover:text-white transition-colors">
+              Why was JavaScript created in 10 days? →
+            </Link>
+            <Link to="/mentor" className="block p-2 rounded bg-white/5 border border-white/5 text-[9px] text-space-textPrimary hover:border-[#7C3AED]/35 hover:text-white transition-colors">
+              What was the conflict between Netscape, Sun and Microsoft? →
+            </Link>
+            <Link to="/mentor" className="block p-2 rounded bg-white/5 border border-white/5 text-[9px] text-space-textPrimary hover:border-[#7C3AED]/35 hover:text-white transition-colors">
+              What is the difference between Java and JavaScript? →
+            </Link>
+          </div>
+
+          <div className="relative flex items-center">
+            <input 
+              type="text" 
+              placeholder="Ask a question..."
+              className="w-full pl-3 pr-9 py-1.5 rounded-lg bg-black/40 border border-white/5 text-[10px] text-space-textPrimary focus:outline-none focus:ring-1 focus:ring-[#7C3AED]/40"
+            />
+            <button className="absolute right-1 p-1 rounded bg-[#7C3AED] text-white hover:bg-[#6D28D9] transition-colors">
+              <Send className="h-3 w-3" />
+            </button>
+          </div>
+        </div>
+
+        {/* Quick Links List matching screenshot */}
+        <div className="space-y-3 text-left border-t border-white/5 pt-6">
+          <span className="font-display font-bold text-[10px] tracking-widest text-space-textSecondary uppercase">
+            Quick Links
+          </span>
+          <div className="space-y-2 font-mono text-[9px]">
+            <a href="https://developer.mozilla.org" target="_blank" rel="noreferrer" className="flex items-center justify-between text-space-textSecondary hover:text-[#7C3AED] transition-colors">
+              <span>MDN: JavaScript Guide</span>
+              <ExternalLink className="h-3 w-3" />
+            </a>
+            <a href="https://javascript.info" target="_blank" rel="noreferrer" className="flex items-center justify-between text-space-textSecondary hover:text-[#7C3AED] transition-colors">
+              <span>JavaScript Timeline</span>
+              <ExternalLink className="h-3 w-3" />
+            </a>
+            <a href="https://tc39.es/ecma262/" target="_blank" rel="noreferrer" className="flex items-center justify-between text-space-textSecondary hover:text-[#7C3AED] transition-colors">
+              <span>ECMAScript Specification</span>
+              <ExternalLink className="h-3 w-3" />
+            </a>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+  );
+}
