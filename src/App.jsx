@@ -1,16 +1,19 @@
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Suspense, lazy } from 'react';
 import ParticleBackground from './components/ParticleBackground';
 import Navbar from './components/Navbar';
-import LandingView from './components/LandingView';
-import NotesView from './components/NotesView';
-import RoadmapView from './components/RoadmapView';
-import PlaygroundView from './components/PlaygroundView';
-import MentorView from './components/MentorView';
-import AboutView from './components/AboutView';
-import FounderView from './components/FounderView';
-import SupportView from './components/SupportView';
+import LoadingFallback from './components/LoadingFallback';
+const LandingView = lazy(() => import('./components/LandingView'));
+const NotesView = lazy(() => import('./components/NotesView'));
+const RoadmapView = lazy(() => import('./components/RoadmapView'));
+const PlaygroundView = lazy(() => import('./components/PlaygroundView'));
+const MentorView = lazy(() => import('./components/MentorView'));
+const AboutView = lazy(() => import('./components/AboutView'));
+const FounderView = lazy(() => import('./components/FounderView'));
+const SupportView = lazy(() => import('./components/SupportView'));
+
 
 export default function App() {
   const location = useLocation();
@@ -24,30 +27,30 @@ export default function App() {
       <Navbar />
 
       {/* Main viewport with cinematic page transitions */}
-      <div className="relative z-10 w-full overflow-hidden">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={location.pathname}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full"
-          >
-            <Routes location={location}>
-              <Route path="/" element={<LandingView />} />
-              <Route path="/notes" element={<NotesView />} />
-              <Route path="/roadmap" element={<RoadmapView />} />
-              <Route path="/playground" element={<PlaygroundView />} />
-              <Route path="/mentor" element={<MentorView />} />
-              <Route path="/about" element={<AboutView />} />
-              <Route path="/founder" element={<FounderView />} />
-              <Route path="/support" element={<SupportView />} />
-              <Route path="*" element={<LandingView />} />
-            </Routes>
-          </motion.div>
-        </AnimatePresence>
-      </div>
+      <Suspense fallback={<LoadingFallback />}>
+  <AnimatePresence mode="wait">
+    <motion.div
+      key={location.pathname}
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -15 }}
+      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      className="w-full"
+    >
+      <Routes location={location}>
+        <Route path="/" element={<LandingView />} />
+        <Route path="/notes" element={<NotesView />} />
+        <Route path="/roadmap" element={<RoadmapView />} />
+        <Route path="/playground" element={<PlaygroundView />} />
+        <Route path="/mentor" element={<MentorView />} />
+        <Route path="/about" element={<AboutView />} />
+        <Route path="/founder" element={<FounderView />} />
+        <Route path="/support" element={<SupportView />} />
+        <Route path="*" element={<LandingView />} />
+      </Routes>
+    </motion.div>
+  </AnimatePresence>
+</Suspense>      
     </div>
   );
 }
