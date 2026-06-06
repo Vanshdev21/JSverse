@@ -6,6 +6,7 @@ import ParticleBackground from './components/ParticleBackground';
 import Navbar from './components/Navbar';
 import LoadingFallback from './components/LoadingFallback';
 import Footer from './components/Footer';
+import { Analytics } from '@vercel/analytics/react';
 
 const LandingView = lazy(() => import('./components/LandingView'));
 const NotesView = lazy(() => import('./components/NotesView'));
@@ -66,6 +67,7 @@ export default function App() {
   </AnimatePresence>
 </Suspense>      
       <Footer />
+      <Analytics />
     </div>
   );
 }
