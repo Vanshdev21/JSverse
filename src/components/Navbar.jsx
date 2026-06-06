@@ -7,41 +7,7 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
 
-  const [isDark, setIsDark] = useState(() => {
-    return !document.documentElement.classList.contains('light');
-  });
 
-  const toggleTheme = () => {
-    if (document.documentElement.classList.contains('light')) {
-      document.documentElement.classList.remove('light');
-      localStorage.setItem('theme', 'dark');
-      setIsDark(true);
-    } else {
-      document.documentElement.classList.add('light');
-      localStorage.setItem('theme', 'light');
-      setIsDark(false);
-    }
-    window.dispatchEvent(new Event('themechange'));
-  };
-
-  useEffect(() => {
-    const handleSync = () => {
-      setIsDark(!document.documentElement.classList.contains('light'));
-    };
-    window.addEventListener('themechange', handleSync);
-    
-    // Sync initial theme
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
-      document.documentElement.classList.add('light');
-      setIsDark(false);
-    } else {
-      document.documentElement.classList.remove('light');
-      setIsDark(true);
-    }
-
-    return () => window.removeEventListener('themechange', handleSync);
-  }, []);
 
   const navLinks = [
     { path: '/notes', label: 'Learn' },
@@ -106,13 +72,6 @@ export default function Navbar() {
 
         {/* Right Action buttons to replicate screenshot */}
         <div className="hidden md:flex items-center gap-3">
-          <button
-            onClick={toggleTheme}
-            className="p-1.5 rounded-full hover:bg-white/5 text-space-textSecondary hover:text-white transition-colors cursor-pointer flex items-center justify-center"
-            title="Toggle theme"
-          >
-            {isDark ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-          </button>
           <Link
             to="/notes"
             className="px-4.5 py-1.5 rounded-full bg-space-yellow text-black font-display font-bold text-xs flex items-center gap-1 hover:bg-[#EAB308] hover:shadow-glow-yellow transition-all"
@@ -162,16 +121,6 @@ export default function Navbar() {
                 );
               })}
               <div className="pt-3 px-2 flex flex-col gap-2">
-                <button
-                  onClick={() => {
-                    toggleTheme();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-2 py-2.5 rounded-xl border border-white/10 text-space-textPrimary bg-white/5 hover:bg-white/10 font-display text-xs font-bold transition-all cursor-pointer"
-                >
-                  {isDark ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-                  <span>{isDark ? 'Dark Mode' : 'Light Mode'}</span>
-                </button>
                 <Link
                   to="/notes"
                   onClick={() => setMobileMenuOpen(false)}

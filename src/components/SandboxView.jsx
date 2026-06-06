@@ -16,7 +16,7 @@ import { runCodeInWorker } from "../utils/workerManager";
 import { CONCEPTS_DATA } from "../data/conceptsData";
 
 // Top editor bar with filename and controls
-const TopEditorBar = ({ onRun, onReset, autoRun, setAutoRun, theme, setTheme, isExecuting }) => (
+const TopEditorBar = ({ onRun, onReset, autoRun, setAutoRun, isExecuting }) => (
   <div className="fixed top-4 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-black/60 backdrop-blur-lg rounded-full px-5 py-2 shadow-lg z-10 border border-purple-500/10">
     <span className="text-sm text-gray-400 font-mono">sandbox.js</span>
     <button
@@ -50,12 +50,6 @@ const TopEditorBar = ({ onRun, onReset, autoRun, setAutoRun, theme, setTheme, is
     >
       <span className={`w-2.5 h-2.5 rounded-full ${autoRun ? 'bg-purple-400' : 'bg-gray-500'}`} />
       Auto‑Play
-    </button>
-    <button
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="px-3 py-1 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-xs transition"
-    >
-      {theme === "dark" ? "Light" : "Dark"}
     </button>
   </div>
 );
@@ -98,7 +92,9 @@ console.log(fn()); // 3`;
   const [steps, setSteps] = useState([]);
   const [current, setCurrent] = useState(0);
   const [autoRun, setAutoRun] = useState(false);
-  const [theme, setTheme] = useState("dark");
+
+
+
   const [activeTab, setActiveTab] = useState("visualization");
   const [isExecuting, setIsExecuting] = useState(false);
   const [execError, setExecError] = useState(null);
@@ -202,14 +198,12 @@ console.log(fn()); // 3`;
   const activeLine = currentStep.line || 0;
 
   return (
-    <div className={`min-h-screen ${theme === "dark" ? "bg-space-bg" : "bg-white"} text-space-textPrimary relative`}>
+    <div className="min-h-screen bg-space-bg text-space-textPrimary relative">
       <TopEditorBar
         onRun={handleRun}
         onReset={handleReset}
         autoRun={autoRun}
         setAutoRun={setAutoRun}
-        theme={theme}
-        setTheme={setTheme}
         isExecuting={isExecuting}
       />
       
@@ -244,7 +238,7 @@ console.log(fn()); // 3`;
                 </button>
               </div>
             </div>
-            <CodeEditor code={code} onChange={setCode} theme={theme} activeLine={activeLine} />
+            <CodeEditor code={code} onChange={setCode} theme="dark" activeLine={activeLine} />
           </div>
         </div>
 

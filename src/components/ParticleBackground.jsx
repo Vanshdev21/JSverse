@@ -142,9 +142,11 @@ export default function ParticleBackground() {
       ctx.fillStyle = '#050816';
       ctx.fillRect(0, 0, width, height);
 
-      // Draw ambient galactic lighting
-      const elapsed = Date.now() - startTime;
-      drawNebulae(elapsed);
+      // Draw ambient galactic lighting (only on desktop to preserve mobile/tablet battery and frame rate)
+      if (width >= 768) {
+        const elapsed = Date.now() - startTime;
+        drawNebulae(elapsed);
+      }
 
       // Update and draw stars
       particles.forEach((star) => {

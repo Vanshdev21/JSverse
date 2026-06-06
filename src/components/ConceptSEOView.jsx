@@ -43,6 +43,8 @@ export default function ConceptSEOView() {
   const [isExecuting, setIsExecuting] = useState(false);
   const [execError, setExecError] = useState(null);
 
+
+
   // Compile concept code
   const executeCode = useCallback((codeToRun) => {
     setIsExecuting(true);

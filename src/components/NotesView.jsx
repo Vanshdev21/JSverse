@@ -126,9 +126,7 @@ export default function NotesView() {
   const [activeTopic, setActiveTopic] = useState('intro-exists');
   const [activeTab, setActiveTab] = useState('notes');
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 1024);
-  const [themeDark, setThemeDark] = useState(() => {
-    return !document.documentElement.classList.contains('light');
-  });
+
 
   const [bookmarks, setBookmarks] = useState(() => {
     try {
@@ -217,26 +215,7 @@ export default function NotesView() {
     }
   };
 
-  useEffect(() => {
-    const handleSync = () => {
-      setThemeDark(!document.documentElement.classList.contains('light'));
-    };
-    window.addEventListener('themechange', handleSync);
-    return () => window.removeEventListener('themechange', handleSync);
-  }, []);
 
-  const handleThemeToggle = () => {
-    if (document.documentElement.classList.contains('light')) {
-      document.documentElement.classList.remove('light');
-      localStorage.setItem('theme', 'dark');
-      setThemeDark(true);
-    } else {
-      document.documentElement.classList.add('light');
-      localStorage.setItem('theme', 'light');
-      setThemeDark(false);
-    }
-    window.dispatchEvent(new Event('themechange'));
-  };
 
   // Playground Sandbox
   const [playgroundCode, setPlaygroundCode] = useState('');
@@ -529,12 +508,6 @@ export default function NotesView() {
 
           {/* Right Header items */}
           <div className="flex items-center gap-3">
-            <button 
-              onClick={handleThemeToggle}
-              className="p-1.5 rounded-full hover:bg-white/5 text-space-textSecondary hover:text-white"
-            >
-              {themeDark ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-            </button>
             <button className="p-1.5 rounded-full hover:bg-white/5 text-space-textSecondary hover:text-white">
               <Bell className="h-4 w-4" />
             </button>
