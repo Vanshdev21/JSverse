@@ -145,7 +145,14 @@ export default function NotesView() {
 
   // Sync routing state from Roadmap and Bookmarks state
   useEffect(() => {
-    if (location.state?.activeTopicId) {
+    // Check for topic parameter from Share URL
+    const params = new URLSearchParams(window.location.search);
+    const sharedTopic = params.get('topic');
+    if (sharedTopic && CHAPTERS_DATA.some(ch => ch.id === sharedTopic)) {
+      setActiveTopic(sharedTopic);
+      // Clean up parameter from URL clean slate
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (location.state?.activeTopicId) {
       setActiveTopic(location.state.activeTopicId);
     }
     if (location.state?.showBookmarkedOnly) {
@@ -539,7 +546,31 @@ export default function NotesView() {
                 }`} 
               />
             </h1>
-            <Share2 className="h-4.5 w-4.5 text-space-textSecondary hover:text-white cursor-pointer" />
+            <div className="relative">
+              <button
+                onClick={() => {
+                  const shareUrl = window.location.href.split('?')[0] + `?topic=${activeTopic}`;
+                  if (navigator.share) {
+                    navigator.share({
+                      title: `JSVerse - ${currentChapter.heading}`,
+                      text: currentChapter.subtitle,
+                      url: shareUrl,
+                    }).catch(() => {});
+                  } else {
+                    navigator.clipboard.writeText(shareUrl);
+                    const toast = document.createElement('div');
+                    toast.className = 'fixed bottom-24 right-6 bg-[#7C3AED] text-white text-xs px-4 py-2 rounded-full shadow-glow-purple z-50 font-bold font-display tracking-wide animate-bounce';
+                    toast.innerText = 'Link copied to clipboard! 🔗';
+                    document.body.appendChild(toast);
+                    setTimeout(() => toast.remove(), 2500);
+                  }
+                }}
+                className="p-1.5 rounded-full hover:bg-white/5 text-space-textSecondary hover:text-white transition-all cursor-pointer"
+                title="Share this topic"
+              >
+                <Share2 className="h-4.5 w-4.5" />
+              </button>
+            </div>
           </div>
           
           <p className="text-space-textSecondary text-xs sm:text-sm leading-relaxed">

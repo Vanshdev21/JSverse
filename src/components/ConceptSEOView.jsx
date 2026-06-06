@@ -13,7 +13,8 @@ import {
   ArrowRight, 
   Activity,
   Layers,
-  Home
+  Home,
+  Share2
 } from 'lucide-react';
 
 import { CONCEPTS_DATA } from '../data/conceptsData';
@@ -243,9 +244,35 @@ export default function ConceptSEOView() {
             <Sparkles className="h-3 w-3 text-space-yellow animate-pulse" />
             <span>Interactive Concept Studio</span>
           </div>
-          <h1 className="font-display font-black text-3xl sm:text-5xl text-white tracking-tight leading-none">
-            {concept.h1}
-          </h1>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <h1 className="font-display font-black text-3xl sm:text-5xl text-white tracking-tight leading-none">
+              {concept.h1}
+            </h1>
+            <button
+              onClick={() => {
+                const shareUrl = window.location.href;
+                if (navigator.share) {
+                  navigator.share({
+                    title: `JSVerse - Learn ${concept.title}`,
+                    text: concept.subtitle,
+                    url: shareUrl,
+                  }).catch(() => {});
+                } else {
+                  navigator.clipboard.writeText(shareUrl);
+                  const toast = document.createElement('div');
+                  toast.className = 'fixed bottom-24 right-6 bg-[#7C3AED] text-white text-xs px-4 py-2 rounded-full shadow-glow-purple z-50 font-bold font-display tracking-wide animate-bounce';
+                  toast.innerText = 'Link copied to clipboard! 🔗';
+                  document.body.appendChild(toast);
+                  setTimeout(() => toast.remove(), 2500);
+                }
+              }}
+              className="inline-flex items-center justify-center gap-1.5 self-start sm:self-auto px-4 py-2 rounded-full border border-white/10 hover:border-white/20 bg-white/5 text-xs font-bold text-white transition-all cursor-pointer shadow-md"
+              title="Share this concept"
+            >
+              <Share2 className="h-4 w-4 text-purple-400" />
+              <span>Share Concept</span>
+            </button>
+          </div>
           <p className="text-space-textSecondary text-sm sm:text-base max-w-3xl leading-relaxed">
             {concept.subtitle}
           </p>
