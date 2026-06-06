@@ -5,6 +5,8 @@ import { Suspense, lazy } from 'react';
 import ParticleBackground from './components/ParticleBackground';
 import Navbar from './components/Navbar';
 import LoadingFallback from './components/LoadingFallback';
+import Footer from './components/Footer';
+
 const LandingView = lazy(() => import('./components/LandingView'));
 const NotesView = lazy(() => import('./components/NotesView'));
 const RoadmapView = lazy(() => import('./components/RoadmapView'));
@@ -17,6 +19,7 @@ const SandboxView = lazy(() => import('./components/SandboxView'));
 const WeirdnessView = lazy(() => import('./components/WeirdnessView'));
 const ProjectsView = lazy(() => import('./components/ProjectsView'));
 const InterviewView = lazy(() => import('./components/InterviewView'));
+const ConceptSEOView = lazy(() => import('./components/ConceptSEOView'));
 
 
 export default function App() {
@@ -51,6 +54,9 @@ export default function App() {
         <Route path="/founder" element={<FounderView />} />
         <Route path="/support" element={<SupportView />} />
         <Route path="/sandbox" element={<SandboxView />} />
+        <Route path="/sandbox/:conceptId" element={<SandboxView />} />
+        <Route path="/visualizer/:conceptId" element={<SandboxView />} />
+        <Route path="/learn/:conceptId" element={<ConceptSEOView />} />
         <Route path="/weirdness" element={<WeirdnessView />} />
         <Route path="/projects" element={<ProjectsView />} />
         <Route path="/interview" element={<InterviewView />} />
@@ -59,6 +65,7 @@ export default function App() {
     </motion.div>
   </AnimatePresence>
 </Suspense>      
+      <Footer />
     </div>
   );
 }

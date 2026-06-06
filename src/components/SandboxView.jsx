@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import CodeEditor from "./CodeEditor";
 import VisualizationCard from "./VisualizationCard";
@@ -12,6 +13,7 @@ import ConsoleOutputCard from "./ConsoleOutputCard";
 import TimelineControls from "./TimelineControls";
 import ErrorBoundary from "./ErrorBoundary";
 import { runCodeInWorker } from "../utils/workerManager";
+import { CONCEPTS_DATA } from "../data/conceptsData";
 
 // Top editor bar with filename and controls
 const TopEditorBar = ({ onRun, onReset, autoRun, setAutoRun, theme, setTheme, isExecuting }) => (
@@ -59,7 +61,13 @@ const TopEditorBar = ({ onRun, onReset, autoRun, setAutoRun, theme, setTheme, is
 );
 
 const SandboxView = () => {
-  const defaultCode = `function outer() {
+  const { conceptId } = useParams();
+
+  const getInitialCode = () => {
+    if (conceptId && CONCEPTS_DATA[conceptId]) {
+      return CONCEPTS_DATA[conceptId].sandboxCode;
+    }
+    return `function outer() {
   let count = 0;
 
   function inner() {
@@ -84,8 +92,9 @@ Promise.resolve("Microtask value").then(function promiseCb(val) {
 });
 
 console.log(fn()); // 3`;
+  };
 
-  const [code, setCode] = useState(defaultCode);
+  const [code, setCode] = useState(getInitialCode);
   const [steps, setSteps] = useState([]);
   const [current, setCurrent] = useState(0);
   const [autoRun, setAutoRun] = useState(false);
@@ -125,11 +134,39 @@ console.log(fn()); // 3`;
     );
   }, []);
 
-  // Run initial code on mount
+  // Run code on mount or when conceptId changes
   useEffect(() => {
-    const abort = executeCode(defaultCode);
+    const activeCode = conceptId && CONCEPTS_DATA[conceptId]
+      ? CONCEPTS_DATA[conceptId].sandboxCode
+      : `function outer() {
+  let count = 0;
+
+  function inner() {
+    count++;
+    return count;
+  }
+
+  return inner;
+}
+
+const fn = outer();
+console.log(fn()); // 1
+console.log(fn()); // 2
+
+// Asynchronous demonstration
+setTimeout(function cb() {
+  console.log("Macrotask callback!");
+}, 0);
+
+Promise.resolve("Microtask value").then(function promiseCb(val) {
+  console.log("Microtask resolved with:", val);
+});
+
+console.log(fn()); // 3`;
+    setCode(activeCode);
+    const abort = executeCode(activeCode);
     return () => abort();
-  }, [executeCode]);
+  }, [conceptId, executeCode]);
 
   const handleRun = useCallback(() => {
     executeCode(code);
