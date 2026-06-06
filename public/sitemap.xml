@@ -2,67 +2,67 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Static Pages -->
   <url>
-    <loc>https://jsverse.org/</loc>
+    <loc>https://jsverse.space/</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/notes</loc>
+    <loc>https://jsverse.space/notes</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/sandbox</loc>
+    <loc>https://jsverse.space/sandbox</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/roadmap</loc>
+    <loc>https://jsverse.space/roadmap</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/playground</loc>
+    <loc>https://jsverse.space/playground</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/mentor</loc>
+    <loc>https://jsverse.space/mentor</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/weirdness</loc>
+    <loc>https://jsverse.space/weirdness</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/projects</loc>
+    <loc>https://jsverse.space/projects</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/about</loc>
+    <loc>https://jsverse.space/about</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/founder</loc>
+    <loc>https://jsverse.space/founder</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/support</loc>
+    <loc>https://jsverse.space/support</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -70,85 +70,85 @@
 
   <!-- Programmatic SEO Concept Pages -->
   <url>
-    <loc>https://jsverse.org/learn/javascript-closures</loc>
+    <loc>https://jsverse.space/learn/javascript-closures</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/learn/event-loop</loc>
+    <loc>https://jsverse.space/learn/event-loop</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/learn/promises</loc>
+    <loc>https://jsverse.space/learn/promises</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/learn/async-await</loc>
+    <loc>https://jsverse.space/learn/async-await</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/learn/hoisting</loc>
+    <loc>https://jsverse.space/learn/hoisting</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/learn/execution-context</loc>
+    <loc>https://jsverse.space/learn/execution-context</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/learn/call-stack</loc>
+    <loc>https://jsverse.space/learn/call-stack</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/learn/scope-chain</loc>
+    <loc>https://jsverse.space/learn/scope-chain</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/learn/memory-heap</loc>
+    <loc>https://jsverse.space/learn/memory-heap</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/learn/microtask-queue</loc>
+    <loc>https://jsverse.space/learn/microtask-queue</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/learn/dom-events</loc>
+    <loc>https://jsverse.space/learn/dom-events</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/learn/objects</loc>
+    <loc>https://jsverse.space/learn/objects</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/learn/arrays</loc>
+    <loc>https://jsverse.space/learn/arrays</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://jsverse.org/learn/functions</loc>
+    <loc>https://jsverse.space/learn/functions</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>

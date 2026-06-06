@@ -635,7 +635,12 @@ export default function NotesView() {
                       return (
                         <div key={bIdx} className="space-y-3">
                           {block.heading && (
-                            <h3 className="font-display font-bold text-base text-white">{block.heading}</h3>
+                            <h3 
+                              id={block.heading.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}
+                              className="font-display font-bold text-base text-white scroll-mt-28"
+                            >
+                              {block.heading}
+                            </h3>
                           )}
                           {block.paragraphs.map((p, pIdx) => (
                             <p key={pIdx} className="text-xs sm:text-sm text-space-textSecondary leading-relaxed" dangerouslySetInnerHTML={{ __html: p }} />
@@ -901,27 +906,32 @@ export default function NotesView() {
             <List className="h-4 w-4 text-[#FACC15]" /> On this page
           </span>
           <div className="space-y-2 border-l border-white/5 pl-3">
-            <button className="block text-[11px] text-left font-bold tracking-wider uppercase text-[#FACC15] border-l-2 border-[#FACC15] -ml-[14px] pl-3.5">
-              1. The Web Was Born Dead
-            </button>
-            <button className="block text-[11px] text-left font-bold tracking-wider uppercase text-space-textSecondary hover:text-white pl-0.5">
-              2. Enter Sun, and a Language Called Java
-            </button>
-            <button className="block text-[11px] text-left font-bold tracking-wider uppercase text-space-textSecondary hover:text-white pl-0.5">
-              3. The Secret War Against Microsoft
-            </button>
-            <button className="block text-[11px] text-left font-bold tracking-wider uppercase text-space-textSecondary hover:text-white pl-0.5">
-              4. Why a SECOND Language Was Needed
-            </button>
-            <button className="block text-[11px] text-left font-bold tracking-wider uppercase text-space-textSecondary hover:text-white pl-0.5">
-              5. Ten Days in May
-            </button>
-            <button className="block text-[11px] text-left font-bold tracking-wider uppercase text-space-textSecondary hover:text-white pl-0.5">
-              6. Two Languages, Side by Side
-            </button>
-            <button className="block text-[11px] text-left font-bold tracking-wider uppercase text-space-textSecondary hover:text-white pl-0.5">
-              7. How the Little Brother Won
-            </button>
+            {currentChapter.notes.blocks
+              .filter(block => block.heading)
+              .map((block, idx) => {
+                const headingText = block.heading;
+                const headingId = headingText.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+                
+                // Track active state using scroll offset check or simple hover effects
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      const element = document.getElementById(headingId);
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }
+                    }}
+                    className={`block text-[11px] text-left font-bold tracking-wider uppercase transition-all duration-200 pl-0.5 cursor-pointer hover:text-white ${
+                      idx === 0 
+                        ? 'text-[#FACC15] border-l-2 border-[#FACC15] -ml-[14px] pl-3.5' 
+                        : 'text-space-textSecondary'
+                    }`}
+                  >
+                    {headingText}
+                  </button>
+                );
+              })}
           </div>
         </div>
 

@@ -125,20 +125,20 @@ export default function ConceptSEOView() {
       <title>{concept.seoTitle}</title>
       <meta name="description" content={concept.metaDescription} />
       <meta name="keywords" content={concept.keywords.join(', ')} />
-      <link rel="canonical" href={`https://jsverse.org/learn/${concept.id}`} />
+      <link rel="canonical" href={`https://jsverse.space/learn/${concept.id}`} />
       
       {/* OpenGraph metadata */}
       <meta property="og:title" content={concept.seoTitle} />
       <meta property="og:description" content={concept.metaDescription} />
       <meta property="og:type" content="article" />
-      <meta property="og:url" content={`https://jsverse.org/learn/${concept.id}`} />
-      <meta property="og:image" content="https://jsverse.org/support-qr.jpg" />
+      <meta property="og:url" content={`https://jsverse.space/learn/${concept.id}`} />
+      <meta property="og:image" content="https://jsverse.space/support-qr.jpg" />
       
       {/* Twitter metadata */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={concept.seoTitle} />
       <meta name="twitter:description" content={concept.metaDescription} />
-      <meta name="twitter:image" content="https://jsverse.org/support-qr.jpg" />
+      <meta name="twitter:image" content="https://jsverse.space/support-qr.jpg" />
 
       {/* JSON-LD Script Injection */}
       <script type="application/ld+json">
@@ -147,30 +147,30 @@ export default function ConceptSEOView() {
           "@graph": [
             {
               "@type": "WebSite",
-              "@id": "https://jsverse.org/#website",
-              "url": "https://jsverse.org",
+              "@id": "https://jsverse.space/#website",
+              "url": "https://jsverse.space",
               "name": "JSVerse",
               "description": "Cinematic JavaScript Learning Universe",
               "potentialAction": {
                 "@type": "SearchAction",
-                "target": "https://jsverse.org/notes?q={search_term_string}",
+                "target": "https://jsverse.space/notes?q={search_term_string}",
                 "query-input": "required name=search_term_string"
               }
             },
             {
               "@type": "Article",
-              "@id": `https://jsverse.org/learn/${concept.id}#article`,
-              "isPartOf": { "@id": "https://jsverse.org/#website" },
+              "@id": `https://jsverse.space/learn/${concept.id}#article`,
+              "isPartOf": { "@id": "https://jsverse.space/#website" },
               "headline": concept.title,
               "description": concept.metaDescription,
               "inLanguage": "en-US",
-              "mainEntityOfPage": `https://jsverse.org/learn/${concept.id}`,
+              "mainEntityOfPage": `https://jsverse.space/learn/${concept.id}`,
               "publisher": {
                 "@type": "EducationalOrganization",
                 "name": "JSVerse",
                 "logo": {
                   "@type": "ImageObject",
-                  "url": "https://jsverse.org/favicon.png"
+                  "url": "https://jsverse.space/favicon.png"
                 }
               }
             },
@@ -192,7 +192,7 @@ export default function ConceptSEOView() {
               "provider": {
                 "@type": "EducationalOrganization",
                 "name": "JSVerse",
-                "sameAs": "https://jsverse.org"
+                "sameAs": "https://jsverse.space"
                }
             },
             {
@@ -202,19 +202,19 @@ export default function ConceptSEOView() {
                   "@type": "ListItem",
                   "position": 1,
                   "name": "Home",
-                  "item": "https://jsverse.org"
+                  "item": "https://jsverse.space"
                 },
                 {
                   "@type": "ListItem",
                   "position": 2,
                   "name": "Learn",
-                  "item": "https://jsverse.org/notes"
+                  "item": "https://jsverse.space/notes"
                 },
                 {
                   "@type": "ListItem",
                   "position": 3,
                   "name": concept.title,
-                  "item": `https://jsverse.org/learn/${concept.id}`
+                  "item": `https://jsverse.space/learn/${concept.id}`
                 }
               ]
             }

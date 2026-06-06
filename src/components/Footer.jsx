@@ -86,7 +86,7 @@ export default function Footer() {
         {/* Bottom copyright details */}
         <div className="border-t border-white/5 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-[10px] font-mono text-space-textSecondary/50 uppercase tracking-widest">
-            © {new Date().getFullYear()} JSVERSE.ORG // SECURE NODE DISCOVERED
+            © {new Date().getFullYear()} JSVERSE.SPACE // SECURE NODE DISCOVERED
           </p>
           <div className="flex items-center gap-1.5 text-[10px] text-space-textSecondary font-mono">
             <span>Made with</span>
