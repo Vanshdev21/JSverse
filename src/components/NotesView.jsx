@@ -22,6 +22,7 @@ import {
   Terminal,
   Cpu,
   Bookmark,
+  HelpCircle,
   Bell,
   Sun,
   Moon,
@@ -40,9 +41,10 @@ import { CHAPTERS_DATA } from '../data/chaptersData';
 
 // Sidebar links mapping to routes
 const SIDEBAR_NAV = [
-  { label: 'Dashboard', icon: Home, path: '/notes' },
+  { label: 'Dashboard', icon: Home, path: '/sandbox' },
   { label: 'Roadmap', icon: Compass, path: '/roadmap' },
   { label: 'Playground', icon: Terminal, path: '/playground' },
+  { label: 'Weirdness', icon: HelpCircle, path: '/weirdness' },
   { label: 'AI Mentor', icon: Cpu, path: '/mentor' },
   { label: 'Bookmarks', icon: Bookmark, path: '/notes' }
 ];
@@ -128,17 +130,40 @@ export default function NotesView() {
     return !document.documentElement.classList.contains('light');
   });
 
+  const [bookmarks, setBookmarks] = useState(() => {
+    try {
+      const saved = localStorage.getItem('jsverse_bookmarks');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
   const [searchActiveIndex, setSearchActiveIndex] = useState(0);
   const searchInputRef = useRef(null);
 
-  // Sync routing state from Roadmap
+  // Sync routing state from Roadmap and Bookmarks state
   useEffect(() => {
     if (location.state?.activeTopicId) {
       setActiveTopic(location.state.activeTopicId);
     }
-  }, [location.state?.activeTopicId]);
+    if (location.state?.showBookmarkedOnly) {
+      setShowBookmarkedOnly(true);
+    }
+  }, [location.state?.activeTopicId, location.state?.showBookmarkedOnly]);
+
+  const toggleBookmark = (topicId) => {
+    setBookmarks(prev => {
+      const updated = prev.includes(topicId)
+        ? prev.filter(id => id !== topicId)
+        : [...prev, topicId];
+      localStorage.setItem('jsverse_bookmarks', JSON.stringify(updated));
+      return updated;
+    });
+  };
 
   // Global search hotkeys listener
   useEffect(() => {
@@ -234,6 +259,13 @@ export default function NotesView() {
   const prevTopic = currentIndex > 0 ? allTopics[currentIndex - 1] : null;
   const nextTopic = currentIndex < allTopics.length - 1 ? allTopics[currentIndex + 1] : null;
 
+  const renderedChapters = CHAPTERS_LIST.map(chapter => {
+    const filteredTopics = showBookmarkedOnly
+      ? chapter.topics.filter(t => bookmarks.includes(t.id))
+      : chapter.topics;
+    return { ...chapter, topics: filteredTopics };
+  }).filter(chapter => chapter.topics.length > 0);
+
   // Sync playground
   useEffect(() => {
     setPlaygroundCode(currentChapter.sandboxCode);
@@ -328,6 +360,28 @@ export default function NotesView() {
             <div className="space-y-1 mb-6 px-1">
               {SIDEBAR_NAV.map((nav) => {
                 const Icon = nav.icon;
+                const isBookmarks = nav.label === 'Bookmarks';
+                
+                if (isBookmarks) {
+                  return (
+                    <button
+                      key={nav.label}
+                      onClick={() => {
+                        setShowBookmarkedOnly(prev => !prev);
+                        if (window.innerWidth <= 1024) setSidebarOpen(false);
+                      }}
+                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-left text-xs font-semibold transition-all border ${
+                        showBookmarkedOnly
+                          ? 'bg-[#7C3AED]/20 border-[#7C3AED]/35 text-white shadow-[0_0_8px_rgba(124,58,237,0.15)]'
+                          : 'border-transparent text-space-textSecondary hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      <Icon className={`h-4 w-4 ${showBookmarkedOnly ? 'text-[#FACC15] fill-[#FACC15]' : 'text-[#7C3AED]/70'}`} />
+                      <span>{nav.label}</span>
+                    </button>
+                  );
+                }
+
                 return (
                   <Link
                     key={nav.label}
@@ -343,52 +397,67 @@ export default function NotesView() {
 
             {/* Section separator */}
             <div className="px-3 pb-2 flex justify-between items-center text-[10px] font-mono text-space-textSecondary uppercase tracking-widest font-bold">
-              <span>JS Fundamentals</span>
+              <span>{showBookmarkedOnly ? 'Bookmarked Topics' : 'JS Fundamentals'}</span>
               <ChevronDown className="h-3.5 w-3.5" />
             </div>
 
             {/* Expandable Chapters tree */}
-            <nav className="space-y-1.5 px-1">
-              {CHAPTERS_LIST.map((chapter) => {
-                const isExpanded = chapter.topics.some(t => t.id === activeTopic) || (activeTopic === 'intro-exists' && chapter.phase.includes('01'));
-                
-                return (
-                  <div key={chapter.phase} className="space-y-1">
-                    <button 
-                      onClick={() => {
-                        if (chapter.topics.length > 0) {
-                          setActiveTopic(chapter.topics[0].id);
-                        }
-                      }}
-                      className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs font-bold uppercase tracking-wider text-space-textPrimary hover:bg-white/5 transition-all"
-                    >
-                      <span>{chapter.phase}</span>
-                      {chapter.topics.length > 0 && <ChevronDown className="h-3.5 w-3.5 text-space-textSecondary" />}
-                    </button>
+            <nav className="space-y-1.5 px-1 flex-1">
+              {showBookmarkedOnly && renderedChapters.length === 0 ? (
+                <div className="flex flex-col items-center justify-center text-center p-5 py-8 bg-white/5 rounded-2xl border border-white/5 space-y-3">
+                  <Bookmark className="h-7 w-7 text-space-textSecondary/40 animate-pulse" />
+                  <p className="text-[10px] text-space-textSecondary leading-normal">
+                    No bookmarked topics. Click the bookmark icon on any topic page to save it.
+                  </p>
+                  <button
+                    onClick={() => setShowBookmarkedOnly(false)}
+                    className="px-2.5 py-1 text-[9px] font-bold bg-[#7C3AED]/20 text-white rounded-lg border border-[#7C3AED]/30 hover:bg-[#7C3AED]/30 transition-all cursor-pointer"
+                  >
+                    View All Topics
+                  </button>
+                </div>
+              ) : (
+                renderedChapters.map((chapter) => {
+                  const isExpanded = showBookmarkedOnly || chapter.topics.some(t => t.id === activeTopic) || (activeTopic === 'intro-exists' && chapter.phase.includes('01'));
+                  
+                  return (
+                    <div key={chapter.phase} className="space-y-1">
+                      <button 
+                        onClick={() => {
+                          if (chapter.topics.length > 0) {
+                            setActiveTopic(chapter.topics[0].id);
+                          }
+                        }}
+                        className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs font-bold uppercase tracking-wider text-space-textPrimary hover:bg-white/5 transition-all"
+                      >
+                        <span>{chapter.phase}</span>
+                        {chapter.topics.length > 0 && <ChevronDown className="h-3.5 w-3.5 text-space-textSecondary" />}
+                      </button>
 
-                    {isExpanded && chapter.topics.map((topic) => {
-                      const isActive = activeTopic === topic.id;
-                      return (
-                        <button
-                          key={topic.id}
-                          onClick={() => {
-                            setActiveTopic(topic.id);
-                            if (window.innerWidth <= 1024) setSidebarOpen(false);
-                          }}
-                          className={`w-full flex items-center gap-2 pl-6 pr-3 py-2 rounded-xl text-left text-xs font-semibold tracking-wide transition-all border ${
-                            isActive
-                              ? 'bg-[#7C3AED]/20 border-[#7C3AED]/35 text-white shadow-[0_0_8px_rgba(124,58,237,0.15)]'
-                              : 'border-transparent text-space-textSecondary hover:text-white hover:bg-white/5'
-                          }`}
-                        >
-                          <span className={`w-1 h-1 rounded-full ${isActive ? 'bg-[#FACC15]' : 'bg-[#7C3AED]/35'}`}></span>
-                          <span>{topic.label}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                );
-              })}
+                      {isExpanded && chapter.topics.map((topic) => {
+                        const isActive = activeTopic === topic.id;
+                        return (
+                          <button
+                            key={topic.id}
+                            onClick={() => {
+                              setActiveTopic(topic.id);
+                              if (window.innerWidth <= 1024) setSidebarOpen(false);
+                            }}
+                            className={`w-full flex items-center gap-2 pl-6 pr-3 py-2 rounded-xl text-left text-xs font-semibold tracking-wide transition-all border ${
+                              isActive
+                                ? 'bg-[#7C3AED]/20 border-[#7C3AED]/35 text-white shadow-[0_0_8px_rgba(124,58,237,0.15)]'
+                                : 'border-transparent text-space-textSecondary hover:text-white hover:bg-white/5'
+                            }`}
+                          >
+                            <span className={`w-1 h-1 rounded-full ${isActive ? 'bg-[#FACC15]' : 'bg-[#7C3AED]/35'}`}></span>
+                            <span>{topic.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  );
+                })
+              )}
             </nav>
 
           </motion.aside>
@@ -488,7 +557,14 @@ export default function NotesView() {
           <div className="flex justify-between items-center">
             <h1 className="font-display font-black text-2xl sm:text-3xl text-white tracking-tight leading-none flex items-center gap-2">
               {currentChapter.heading}
-              <Bookmark className="h-5 w-5 text-space-yellow cursor-pointer" />
+              <Bookmark 
+                onClick={() => toggleBookmark(activeTopic)}
+                className={`h-5 w-5 cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95 ${
+                  bookmarks.includes(activeTopic)
+                    ? 'fill-[#FACC15] text-[#FACC15] drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]'
+                    : 'text-space-textSecondary hover:text-white'
+                }`} 
+              />
             </h1>
             <Share2 className="h-4.5 w-4.5 text-space-textSecondary hover:text-white cursor-pointer" />
           </div>

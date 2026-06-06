@@ -46,7 +46,8 @@ export default function Navbar() {
   const navLinks = [
     { path: '/notes', label: 'Learn' },
     { path: '/roadmap', label: 'Roadmap' },
-    { path: '/playground', label: 'Playground' },
+    { path: '/sandbox', label: 'Sandbox' },
+    { path: '/projects', label: 'Projects' },
     { path: '/mentor', label: 'AI Mentor' },
     { path: '/about', label: 'About' },
     { path: '/founder', label: 'Creator' },
@@ -54,13 +55,13 @@ export default function Navbar() {
   ];
 
   return (
-    <div className="fixed top-5 left-0 right-0 z-50 flex justify-center px-4 sm:px-6 lg:px-8">
+    <div className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 sm:px-6 lg:px-8">
       {/* Floating Centered Pill Navbar */}
       <motion.nav 
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-        className="w-full max-w-5xl rounded-full bg-[#050816]/75 backdrop-blur-xl border border-white/10 px-4 sm:px-6 py-3 flex items-center justify-between shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5),inset_0_1px_0_0_rgba(255,255,255,0.05)]"
+        className="w-full max-w-6xl rounded-full bg-[#050816]/75 backdrop-blur-xl border border-white/10 px-6 sm:px-8 py-4 flex items-center justify-between shadow-[0_12px_36px_-10px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.05)]"
       >
         
         {/* Logo Section */}

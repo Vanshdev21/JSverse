@@ -13,6 +13,10 @@ const MentorView = lazy(() => import('./components/MentorView'));
 const AboutView = lazy(() => import('./components/AboutView'));
 const FounderView = lazy(() => import('./components/FounderView'));
 const SupportView = lazy(() => import('./components/SupportView'));
+const SandboxView = lazy(() => import('./components/SandboxView'));
+const WeirdnessView = lazy(() => import('./components/WeirdnessView'));
+const ProjectsView = lazy(() => import('./components/ProjectsView'));
+const InterviewView = lazy(() => import('./components/InterviewView'));
 
 
 export default function App() {
@@ -46,6 +50,10 @@ export default function App() {
         <Route path="/about" element={<AboutView />} />
         <Route path="/founder" element={<FounderView />} />
         <Route path="/support" element={<SupportView />} />
+        <Route path="/sandbox" element={<SandboxView />} />
+        <Route path="/weirdness" element={<WeirdnessView />} />
+        <Route path="/projects" element={<ProjectsView />} />
+        <Route path="/interview" element={<InterviewView />} />
         <Route path="*" element={<LandingView />} />
       </Routes>
     </motion.div>

@@ -111,12 +111,15 @@
     inset 0 1px 1px rgba(255, 255, 255, 0.03),
     var(--glass-shadow);
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 .glass-card-premium:hover {
   border-color: var(--glass-hover-border);
   background: var(--glass-hover-bg);
-  transform: translateY(-4px);
+  transform: translateY(-4px) translate3d(0, 0, 0);
   box-shadow: 
     inset 0 1px 1px rgba(255, 255, 255, 0.05),
     var(--card-glow-shadow),
@@ -133,12 +136,15 @@
     inset 0 1px 1px rgba(255, 255, 255, 0.03),
     var(--glass-shadow);
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 .glass-card-yellow:hover {
   border-color: var(--glass-yellow-hover-border);
   background: var(--glass-hover-bg);
-  transform: translateY(-4px);
+  transform: translateY(-4px) translate3d(0, 0, 0);
   box-shadow: 
     inset 0 1px 1px rgba(255, 255, 255, 0.05),
     0 0 30px rgba(250, 204, 21, 0.15),
@@ -356,5 +362,11 @@
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
+}
+
+/* Executing line decoration in Monaco editor */
+.active-executing-line-bg {
+  background: rgba(124, 58, 237, 0.16) !important;
+  border-left: 3px solid #7c3aed !important;
 }
 

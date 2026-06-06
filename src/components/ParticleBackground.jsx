@@ -15,8 +15,9 @@ export default function ParticleBackground() {
     let height = (canvas.height = window.innerHeight);
 
     const particles = [];
-    // Number of stars scaled by resolution
-    const particleCount = Math.min(120, Math.floor((width * height) / 14000));
+    // Number of stars scaled by resolution and screen type
+    const isMobile = width < 768;
+    const particleCount = Math.min(isMobile ? 40 : 120, Math.floor((width * height) / (isMobile ? 25000 : 14000)));
 
     class Star {
       constructor() {
@@ -87,11 +88,15 @@ export default function ParticleBackground() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         
-        // Deep purple hue glow for near stars
-        if (this.depth > 0.8) {
+        // Deep purple hue glow for near stars (disable shadow calculations on mobile to optimize performance)
+        const isMobileScreen = width < 768;
+        if (this.depth > 0.8 && !isMobileScreen) {
           ctx.fillStyle = `rgba(192, 132, 252, ${this.alpha})`;
           ctx.shadowBlur = 6;
           ctx.shadowColor = '#7C3AED';
+        } else if (this.depth > 0.8) {
+          ctx.fillStyle = `rgba(192, 132, 252, ${this.alpha})`;
+          ctx.shadowBlur = 0;
         } else if (this.depth > 0.5) {
           ctx.fillStyle = `rgba(254, 240, 138, ${this.alpha})`;
           ctx.shadowBlur = 0;
@@ -130,7 +135,10 @@ export default function ParticleBackground() {
     };
 
     let startTime = Date.now();
+    let isTabActive = true;
+
     const animate = () => {
+      if (!isTabActive) return;
       ctx.fillStyle = '#050816';
       ctx.fillRect(0, 0, width, height);
 
@@ -164,15 +172,27 @@ export default function ParticleBackground() {
       mouseRef.current.y = -1000;
     };
 
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        isTabActive = false;
+        cancelAnimationFrame(animationFrameId);
+      } else {
+        isTabActive = true;
+        animate();
+      }
+    };
+
     window.addEventListener('resize', handleResize);
     window.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseleave', handleMouseLeave);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 

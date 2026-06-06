@@ -97,8 +97,8 @@ export default function SupportView() {
   const roadmapItems = [
     { title: "JavaScript Fundamentals Universe", status: "completed", desc: "Core language matrix, primitives, operators, and functions." },
     { title: "Interactive Playground Expansion", status: "completed", desc: "Advanced web compiler sandbox modules with console streaming." },
-    { title: "Event Loop Visualizer", status: "active", desc: "Visualizing Web APIs, macro/microtask queues, call stack cycles." },
-    { title: "Memory Heap Simulator", status: "upcoming", desc: "Visualizing variable garbage collection and heap references." },
+    { title: "Event Loop Visualizer", status: "completed", desc: "Visualizing Web APIs, macro/microtask queues, call stack cycles." },
+    { title: "Memory Heap Simulator", status: "completed", desc: "Visualizing variable garbage collection and heap references." },
     { title: "AI Story Videos", status: "upcoming", desc: "Generating cinematic animated videos for complex scripting topics." },
     { title: "React Universe", status: "upcoming", desc: "Interactive virtual DOM trees and fiber reconciliation nodes." },
     { title: "Web3 Universe", status: "upcoming", desc: "Low-level smart contracts and blockchain client transactions." },

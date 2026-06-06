@@ -957,6 +957,10 @@ let y = "Assigned";
           text: 'Imagine a camper leaving their hometown (outer scope). The camper pack variables from home inside a backpack (the closure). The camper now travels to a remote forest (a different execution context). Even though the hometown is miles away and inaccessible to local forest creatures, the camper can open their backpack and access their home items anytime.'
         },
         {
+          type: 'quote',
+          text: '“This variable escaped death. By capturing references inside inner scopes, variables survive execution stack clearance and persist in heap memory.”'
+        },
+        {
           type: 'text',
           heading: '2. Heap Scope Persistence and Garbage Collection',
           paragraphs: [
