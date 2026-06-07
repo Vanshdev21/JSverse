@@ -226,6 +226,16 @@ export default function LandingView() {
                   <ArrowRight className="h-4 w-4" />
                 </Link>
 
+                {/* Immersive "Enter Story Mode" Button */}
+                <Link
+                  to="/story"
+                  className="group relative px-6 py-3 rounded-xl border border-[#7C3AED]/30 hover:border-transparent text-white bg-[#7C3AED]/10 font-display font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 active:scale-95 overflow-hidden transition-all shadow-[0_0_0_0_rgba(124,58,237,0)] hover:shadow-[0_0_35px_rgba(124,58,237,0.35)] hover:-translate-y-0.5 hover:bg-[#7C3AED]/20"
+                >
+                  <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shine-sweep"></div>
+                  <Sparkles className="h-3.5 w-3.5 text-[#C084FC] group-hover:text-white animate-pulse" />
+                  <span>Enter Story Mode</span>
+                </Link>
+
                 {/* Improved Watch Trailer Button */}
                 <button
                   onClick={openTrailer}

@@ -21,18 +21,21 @@ const WeirdnessView = lazy(() => import('./components/WeirdnessView'));
 const ProjectsView = lazy(() => import('./components/ProjectsView'));
 const InterviewView = lazy(() => import('./components/InterviewView'));
 const ConceptSEOView = lazy(() => import('./components/ConceptSEOView'));
+const StoryView = lazy(() => import('./components/StoryView'));
+
 
 
 export default function App() {
   const location = useLocation();
+  const isStoryPage = location.pathname === '/story';
 
   return (
     <div className="min-h-screen text-space-textPrimary bg-space-bg selection:bg-[#7C3AED]/30 selection:text-[#FACC15] relative">
       {/* Immersive space canvas particles */}
-      <ParticleBackground />
+      {!isStoryPage && <ParticleBackground />}
 
       {/* Sticky blurred glass header */}
-      <Navbar />
+      {!isStoryPage && <Navbar />}
 
       {/* Main viewport with cinematic page transitions */}
       <Suspense fallback={<LoadingFallback />}>
@@ -61,12 +64,13 @@ export default function App() {
         <Route path="/weirdness" element={<WeirdnessView />} />
         <Route path="/projects" element={<ProjectsView />} />
         <Route path="/interview" element={<InterviewView />} />
+        <Route path="/story" element={<StoryView />} />
         <Route path="*" element={<LandingView />} />
       </Routes>
     </motion.div>
   </AnimatePresence>
 </Suspense>      
-      <Footer />
+      {!isStoryPage && <Footer />}
       <Analytics />
     </div>
   );
